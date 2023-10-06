@@ -5,45 +5,33 @@ info:
 servers:
   - url: https://localhost:8080
 tags:
-  - name: Customer
-    description: Customer specific data.
+  - name: TenantV1
+    description: Execute tenant CRUD operations
 paths:
-  /customer:
-      post:
+  /v1/tenant/{orgId}:
+      get:
         tags:
-          - Customer
-        summary: Create Customer
-        operationId: createCustomer
-        requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
+          - TenantV1
+        summary: Get Tenants by organization ID
+        operationId: getTenantsByOrgId
+        parameters:
+        - name: orgId
+          in: path
+          required: true
+          schema:
+            type: string
         responses:
-          '200':
+          "200":
             description: OK
             content:
-              'application/json':
+              "application/json":
                 schema:
-                  $ref: '#/components/schemas/CustomerFullData'
+                  $ref: "#/components/schemas/TenantResponse"
 components:
   schemas:
-    Customer:
+    TenantResponse:
       type: object
       properties:
-        firstName:
+        tenantId:
           type: string
-          description: First name of the customer
-        lastName:
-          type: string
-          description: Last name of the customer
-    CustomerFullData:
-      allOf:
-        - $ref: '#/components/schemas/Customer'
-        - type: object
-          properties:
-            customerId:
-              type: integer
-              description: The ID of the customer
-              format: int64
-      description: Full data of the customer.
+          description: Id of the tenant

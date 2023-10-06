@@ -5,45 +5,46 @@ info:
 servers:
   - url: https://localhost:8080
 tags:
-  - name: Customer
-    description: Customer specific data.
+  - name: TenantInternal
+    description: Execute tenant CRUD operations
 paths:
-  /customer:
-      post:
+  /internal/tenant:
+      get:
         tags:
-          - Customer
-        summary: Create Customer
-        operationId: createCustomer
-        requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
+          - TenantInternal
+        summary: Get all Tenant maps
+        operationId: getAllTenants
         responses:
-          '200':
+          "200":
             description: OK
             content:
-              'application/json':
+              "application/json":
                 schema:
-                  $ref: '#/components/schemas/CustomerFullData'
+                  $ref: "#/components/schemas/TenantResponse"
+  /internal/tenant/{id}:
+      delete:
+        tags:
+          - TenantInternal
+        summary: Delete Tenant by GUID
+        operationId: deleteTenantbyId
+        parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        responses:
+          "204":
+            description: No Content
+
 components:
   schemas:
-    Customer:
+    TenantResponse:
       type: object
       properties:
-        firstName:
+        orgId:
           type: string
-          description: First name of the customer
-        lastName:
+          description: Id of the organization
+        tenantId:
           type: string
-          description: Last name of the customer
-    CustomerFullData:
-      allOf:
-        - $ref: '#/components/schemas/Customer'
-        - type: object
-          properties:
-            customerId:
-              type: integer
-              description: The ID of the customer
-              format: int64
-      description: Full data of the customer.
+          description: Id of the tenant
