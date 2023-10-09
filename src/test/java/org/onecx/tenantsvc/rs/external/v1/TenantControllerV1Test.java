@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.onecx.tenantsvc.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.io.github.onecx.tenantsvc.v1.model.TenantResponseDTOV1;
+import gen.io.github.onecx.tenantsvc.v1.model.ResponseTenantMapDTOV1;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@WithDBData(value = {"testdata/tenant-testdata.xml"}, deleteBeforeInsert = true, rinseAndRepeat = true)
+@WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
 class TenantControllerV1Test extends AbstractTest {
 
     @TestHTTPEndpoint(TenantControllerV1.class)
@@ -34,7 +34,7 @@ class TenantControllerV1Test extends AbstractTest {
                 .get(getUserOrderUrl, orgId);
 
         response.then().statusCode(OK.getStatusCode());
-        var tenantDTO = response.as(TenantResponseDTOV1.class);
+        var tenantDTO = response.as(ResponseTenantMapDTOV1.class).getTenantMap();
         assertEquals("10", tenantDTO.getTenantId());
     }
 

@@ -13,7 +13,7 @@ paths:
         tags:
           - TenantV1
         summary: Get Tenants by organization ID
-        operationId: getTenantsByOrgId
+        operationId: getTenantMapsByOrgId
         parameters:
         - name: orgId
           in: path
@@ -26,10 +26,17 @@ paths:
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/TenantResponse"
+                  $ref: "#/components/schemas/ResponseTenantMap"
 components:
   schemas:
-    TenantResponse:
+    ResponseTenantMap:
+      required:
+      - TenantMap
+      type: object
+      properties:
+        TenantMap:
+          $ref: '#/components/schemas/TenantMap'
+    TenantMap:
       type: object
       properties:
         tenantId:

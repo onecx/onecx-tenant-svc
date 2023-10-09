@@ -13,20 +13,64 @@ paths:
         tags:
           - TenantInternal
         summary: Get all Tenant maps
-        operationId: getAllTenants
+        operationId: getAllTenantMaps
         responses:
           "200":
             description: OK
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/TenantResponse"
+                  $ref: "#/components/schemas/ResponseTenantMap"
+        security:
+            - SecurityScheme:
+              - onecx-portal-admin
+              - onecx-portal-super-admin
+      post:
+        tags:
+          - TenantInternal
+        summary: Post new Tenant
+        operationId: createTenantMap
+        requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RequestTenantMap'
+        responses:
+          "201":
+            description: Created
+        security:
+            - SecurityScheme:
+              - onecx-portal-admin
+              - onecx-portal-super-admin
   /internal/tenant/{id}:
+      put:
+        tags:
+          - TenantInternal
+        summary: Update Tenant by GUID
+        operationId: updateTenantMapById
+        parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RequestTenantMap'
+        responses:
+          "200":
+            description: OK
+        security:
+        - SecurityScheme:
+          - onecx-portal-admin
+          - onecx-portal-super-admin
       delete:
         tags:
           - TenantInternal
         summary: Delete Tenant by GUID
-        operationId: deleteTenantbyId
+        operationId: deleteTenantMapById
         parameters:
         - name: id
           in: path
@@ -36,10 +80,37 @@ paths:
         responses:
           "204":
             description: No Content
+        security:
+        - SecurityScheme:
+          - onecx-portal-admin
+          - onecx-portal-super-admin
 
 components:
   schemas:
-    TenantResponse:
+    RequestTenantMap:
+      required:
+      - InputTenantMap
+      type: object
+      properties:
+        InputTenantMap:
+          $ref: '#/components/schemas/InputTenantMap'
+    ResponseTenantMap:
+      required:
+      - TenantMap
+      type: object
+      properties:
+        TenantMap:
+          $ref: '#/components/schemas/TenantMap'
+    InputTenantMap:
+      type: object
+      properties:
+        orgId:
+          type: string
+          description: Id of the organization
+        tenantId:
+          type: string
+          description: Id of the tenant
+    TenantMap:
       type: object
       properties:
         orgId:
