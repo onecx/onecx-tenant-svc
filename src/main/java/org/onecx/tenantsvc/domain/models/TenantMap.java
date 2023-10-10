@@ -18,9 +18,9 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 public class TenantMap extends TraceableEntity {
 
-    @Column(name = "org_id")
+    @Column(name = "org_id", unique = true)
     private String orgId;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
+    @Column(name = "tenant_id", unique = true)
+    private Integer tenantId;
 }

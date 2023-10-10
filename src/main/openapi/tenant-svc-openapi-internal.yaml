@@ -12,23 +12,34 @@ paths:
       get:
         tags:
           - TenantInternal
-        summary: Get all Tenant maps
-        operationId: getAllTenantMaps
+        summary: Get all Tenant maps by page number and page size
+        operationId: getAllTenantMapsPageable
+        parameters:
+          - name: pageNumber
+            in: query
+            schema:
+              format: int32
+              description: The number of page.
+              default: 0
+              type: integer
+          - name: pageSize
+            in: query
+            schema:
+              format: int32
+              description: The size of page
+              default: 100
+              type: integer
         responses:
           "200":
             description: OK
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/ResponseTenantMap"
-        security:
-            - SecurityScheme:
-              - onecx-portal-admin
-              - onecx-portal-super-admin
+                  $ref: "#/components/schemas/ResponseTenantMaps"
       post:
         tags:
           - TenantInternal
-        summary: Post new Tenant
+        summary: Post new Tenant map
         operationId: createTenantMap
         requestBody:
             content:
@@ -38,15 +49,17 @@ paths:
         responses:
           "201":
             description: Created
-        security:
-            - SecurityScheme:
-              - onecx-portal-admin
-              - onecx-portal-super-admin
+          "400":
+            description: Created
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorResponse'
   /internal/tenant/{id}:
       put:
         tags:
           - TenantInternal
-        summary: Update Tenant by GUID
+        summary: Update Tenant map by GUID
         operationId: updateTenantMapById
         parameters:
         - name: id
@@ -62,54 +75,42 @@ paths:
         responses:
           "200":
             description: OK
-        security:
-        - SecurityScheme:
-          - onecx-portal-admin
-          - onecx-portal-super-admin
-      delete:
-        tags:
-          - TenantInternal
-        summary: Delete Tenant by GUID
-        operationId: deleteTenantMapById
-        parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-        responses:
-          "204":
-            description: No Content
-        security:
-        - SecurityScheme:
-          - onecx-portal-admin
-          - onecx-portal-super-admin
+          "404":
+            description: Not found
 
 components:
   schemas:
     RequestTenantMap:
       required:
-      - InputTenantMap
+        - InputTenantMap
       type: object
       properties:
-        InputTenantMap:
+        inputTenantMap:
           $ref: '#/components/schemas/InputTenantMap'
     ResponseTenantMap:
       required:
-      - TenantMap
+        - TenantMap
       type: object
       properties:
-        TenantMap:
+        tenantMap:
           $ref: '#/components/schemas/TenantMap'
+    ResponseTenantMaps:
+      required:
+        - TenantMap
+      type: object
+      properties:
+        tenantMaps:
+          type: array
+          items:
+            $ref: '#/components/schemas/TenantMap'
     InputTenantMap:
+      required:
+        - orgId
       type: object
       properties:
         orgId:
           type: string
           description: Id of the organization
-        tenantId:
-          type: string
-          description: Id of the tenant
     TenantMap:
       type: object
       properties:
@@ -117,5 +118,18 @@ components:
           type: string
           description: Id of the organization
         tenantId:
-          type: string
+          type: integer
           description: Id of the tenant
+    ErrorResponse:
+      type: object
+      properties:
+        key:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: string
+        details:
+          type: array
+          items:
+            type: string

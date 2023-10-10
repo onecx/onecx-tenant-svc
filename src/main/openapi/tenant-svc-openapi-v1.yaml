@@ -8,18 +8,12 @@ tags:
   - name: TenantV1
     description: Execute tenant CRUD operations
 paths:
-  /v1/tenant/{orgId}:
+  /v1/tenant:
       get:
         tags:
           - TenantV1
-        summary: Get Tenants by organization ID
+        summary: Get Tenants by configurable field from token
         operationId: getTenantMapsByOrgId
-        parameters:
-        - name: orgId
-          in: path
-          required: true
-          schema:
-            type: string
         responses:
           "200":
             description: OK
@@ -34,11 +28,11 @@ components:
       - TenantMap
       type: object
       properties:
-        TenantMap:
+        tenantMap:
           $ref: '#/components/schemas/TenantMap'
     TenantMap:
       type: object
       properties:
         tenantId:
-          type: string
+          type: integer
           description: Id of the tenant

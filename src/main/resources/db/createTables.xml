@@ -17,8 +17,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="org_id" type="VARCHAR(255)"/>
-            <column name="tenant_id" type="VARCHAR(255)"/>
+            <column name="tenant_id" type="INTEGER"/>
         </createTable>
+    </changeSet>
+
+    <changeSet author="dev (generated)" id="create-constraints">
+        <addUniqueConstraint columnNames="tenant_id" constraintName="ui_tenant_id" tableName="tenant_map"/>
+        <addUniqueConstraint columnNames="org_id" constraintName="ui_org_id" tableName="tenant_map"/>
     </changeSet>
 
     <changeSet author="dev (generated)" id="create-data-import-log">
