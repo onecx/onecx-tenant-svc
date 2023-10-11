@@ -17,7 +17,7 @@ import io.quarkus.test.keycloak.client.KeycloakTestClient;
 
 @QuarkusTest
 @TestHTTPEndpoint(TenantControllerV1.class)
-@WithDBData(value = {"testdata/tenant-testdata.xml"}, deleteBeforeInsert = true, rinseAndRepeat = true)
+@WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
 class TenantControllerV1Test extends AbstractTest {
 
     private static String token;
