@@ -36,10 +36,10 @@ public class JWTService {
             throw new CouldNotReadFieldOfTokenException("Token is null");
         }
 
-        var realmAccess = token.getClaim(orgIdField);
+        var orgIdClaim = token.getClaim(orgIdField);
 
-        if (realmAccess != null) {
-            return realmAccess.toString();
+        if (orgIdClaim != null) {
+            return orgIdClaim.toString();
         } else {
             var jwtLoad = extractPayLoadOfToken(token);
             log.error(format("Could not read field: %s of token: %s", orgIdField, jwtLoad));
