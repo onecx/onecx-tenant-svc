@@ -32,32 +32,13 @@ public class JWTService {
 
     private String readOrgIdFromToken(JsonWebToken token) throws CouldNotReadFieldOfTokenException {
 
-        if (token == null) {
-            throw new CouldNotReadFieldOfTokenException("Token is null");
-        }
-
         var orgIdClaim = token.getClaim(orgIdField);
 
         if (orgIdClaim != null) {
             return orgIdClaim.toString();
         } else {
-            var jwtLoad = extractPayLoadOfToken(token);
-            log.error(format("Could not read field: %s of token: %s", orgIdField, jwtLoad));
+            log.error(format("Could not read field: %s of token: %s", orgIdField, token.getRawToken()));
             throw new CouldNotReadFieldOfTokenException(format("Could not read org ID of field: %s ", orgIdField));
         }
-    }
-
-    private static String extractPayLoadOfToken(JsonWebToken token) {
-
-        if (token.getRawToken() == null) {
-            return "Token is null";
-        }
-
-        var jwtSplit = token.getRawToken().split("\\.");
-        var jwtLoad = "";
-        if (jwtSplit.length == 3) {
-            jwtLoad = jwtSplit[1];
-        }
-        return jwtLoad;
     }
 }

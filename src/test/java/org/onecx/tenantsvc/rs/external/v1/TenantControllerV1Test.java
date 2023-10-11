@@ -1,19 +1,18 @@
 package org.onecx.tenantsvc.rs.external.v1;
 
-import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.Response.Status.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import gen.io.github.onecx.tenantsvc.v1.model.ResponseTenantMapDTOV1;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.onecx.tenantsvc.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.io.github.onecx.tenantsvc.v1.model.ResponseTenantMapDTOV1;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.keycloak.client.KeycloakTestClient;
+import static io.restassured.RestAssured.given;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.Response.Status.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(TenantControllerV1.class)
@@ -62,7 +61,7 @@ class TenantControllerV1Test extends AbstractTest {
     }
 
     @Test
-    void getTenantMapsByOrgId_shouldReturnBadRequest_whenTokenIsNull() {
+    void getTenantMapsByOrgId_shouldReturnBadRequest_whenNoTokenIsPassed() {
 
         given()
                 .contentType(APPLICATION_JSON)
