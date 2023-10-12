@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.onecx.tenantsvc.rs.internal.controllers.TenantControllerInternal;
+import org.onecx.tenantsvc.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.io.github.onecx.tenantsvc.rs.internal.model.InputTenantMapDTO;
@@ -19,7 +20,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
 @TestHTTPEndpoint(TenantControllerInternal.class)
-class TenantControllerInternalTest {
+class TenantControllerInternalTest extends AbstractTest {
 
     @Test
     void getAllTenantMapsPageable() {
@@ -51,6 +52,7 @@ class TenantControllerInternalTest {
                 .accept(APPLICATION_JSON)
                 .body(requestTenantMapDTO)
                 .put("1");
+
         response.then().statusCode(OK.getStatusCode());
         var tenantMapDTO = response.as(ResponseTenantMapDTO.class).getTenantMap();
         assertThat(tenantMapDTO.getTenantId()).isEqualTo(10);
@@ -107,6 +109,7 @@ class TenantControllerInternalTest {
                 .accept(APPLICATION_JSON)
                 .body(requestTenantMapDTO)
                 .post();
+
         response.then().statusCode(CREATED.getStatusCode());
         var tenantMapDTO = response.as(ResponseTenantMapDTO.class).getTenantMap();
         assertThat(tenantMapDTO.getTenantId()).isEqualTo(12);

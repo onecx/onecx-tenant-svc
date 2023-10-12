@@ -13,8 +13,8 @@ mvn compile quarkus:dev
 
 ## Develop
 
-Before committing run command below to sort imports otherwise GitHub pipeline will fail.
+Before committing run command below to sort imports or GitHub pipeline will fail.
 
 ```
-mvn net.revelc.code.formatter:formatter-maven-plugin:2.23.0:format
+mvn net.revelc.code:impsort-maven-plugin:1.9.0:sort
 ```
