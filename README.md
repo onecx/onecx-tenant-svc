@@ -1,6 +1,6 @@
 # OneCX-tenant-svc
 
-In the OneCX Portal we need to support Multi-Tenancy. In order to do so this application was created:
+In the OneCX Portal we want to support Multi-Tenancy. In order to do so this application was created:
 TenantResolver Microservice To resolve Tenant - by user ID & Org-Party Id.
 
 ## Running the application in dev mode

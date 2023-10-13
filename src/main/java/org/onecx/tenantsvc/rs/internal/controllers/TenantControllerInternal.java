@@ -1,7 +1,8 @@
 package org.onecx.tenantsvc.rs.internal.controllers;
 
 import static jakarta.transaction.Transactional.TxType.NOT_SUPPORTED;
-import static jakarta.ws.rs.core.Response.Status.*;
+import static jakarta.ws.rs.core.Response.Status.CREATED;
+import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static java.lang.String.format;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -11,10 +12,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.onecx.tenantsvc.domain.daos.TenantMapDAO;
 import org.onecx.tenantsvc.domain.mappers.TenantMapMapper;
-import org.onecx.tenantsvc.domain.models.TenantMap;
-import org.onecx.tenantsvc.rs.internal.services.ErrorResponseService;
 import org.tkit.quarkus.jpa.daos.Page;
-import org.tkit.quarkus.jpa.exceptions.DAOException;
 
 import gen.io.github.onecx.tenantsvc.rs.internal.TenantInternalApi;
 import gen.io.github.onecx.tenantsvc.rs.internal.model.RequestTenantMapDTO;
@@ -31,12 +29,10 @@ public class TenantControllerInternal implements TenantInternalApi {
     TenantMapDAO tenantMapDAO;
     @Inject
     TenantMapMapper tenantMapMapper;
-    @Inject
-    ErrorResponseService errorResponseService;
 
     @Override
     @Transactional
-    public Response getAllTenantMapsPageable(Integer pageNumber, Integer pageSize) {
+    public Response getAllTenantMaps(Integer pageNumber, Integer pageSize) {
 
         var tenantMaps = tenantMapDAO.createPageQuery(Page.of(pageNumber, pageSize)).getPageResult().getStream().toList();
         var tenantMapDTOs = tenantMapMapper.map(tenantMaps);
@@ -57,12 +53,7 @@ public class TenantControllerInternal implements TenantInternalApi {
         }
 
         tenantMapMapper.update(requestTenantMapDTO.getInputTenantMap(), tenantMap);
-        TenantMap updatedTenantMap;
-        try {
-            updatedTenantMap = tenantMapDAO.update(tenantMap);
-        } catch (DAOException de) {
-            return Response.status(BAD_REQUEST).entity(errorResponseService.createErrorResponse(de)).build();
-        }
+        var updatedTenantMap = tenantMapDAO.update(tenantMap);
 
         var responseTenantMapDTO = new ResponseTenantMapDTO();
         responseTenantMapDTO.setTenantMap(tenantMapMapper.map(updatedTenantMap));
@@ -76,11 +67,7 @@ public class TenantControllerInternal implements TenantInternalApi {
 
         var tenantMap = tenantMapMapper.create(requestTenantMapDTO.getInputTenantMap());
 
-        try {
-            tenantMapDAO.create(tenantMap);
-        } catch (DAOException de) {
-            return Response.status(BAD_REQUEST).entity(errorResponseService.createErrorResponse(de)).build();
-        }
+        tenantMapDAO.create(tenantMap);
 
         var responseTenantMapDTO = new ResponseTenantMapDTO();
         responseTenantMapDTO.setTenantMap(tenantMapMapper.map(tenantMap));

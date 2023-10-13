@@ -21,6 +21,18 @@ paths:
               "application/json":
                 schema:
                   $ref: "#/components/schemas/ResponseTenantMap"
+          "400":
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
+          "404":
+            description: Not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
 components:
   schemas:
     ResponseTenantMap:
@@ -35,4 +47,16 @@ components:
       properties:
         tenantId:
           type: integer
+          default: 10
           description: Id of the tenant
+    RestException:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        message:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: object

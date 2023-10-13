@@ -13,7 +13,7 @@ paths:
         tags:
           - TenantInternal
         summary: Get all Tenant maps by page number and page size
-        operationId: getAllTenantMapsPageable
+        operationId: getAllTenantMaps
         parameters:
           - name: pageNumber
             in: query
@@ -49,12 +49,22 @@ paths:
         responses:
           "201":
             description: Created
+            content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/ResponseTenantMap"
           "400":
-            description: Created
+            description: Bad request
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/ErrorResponse'
+                  $ref: '#/components/schemas/RestException'
+          "404":
+            description: Not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
   /internal/tenant/{id}:
       put:
         tags:
@@ -75,8 +85,22 @@ paths:
         responses:
           "200":
             description: OK
+            content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/ResponseTenantMap"
+          "400":
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
           "404":
             description: Not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
 
 components:
   schemas:
@@ -119,17 +143,16 @@ components:
           description: Id of the organization
         tenantId:
           type: integer
+          default: 10
           description: Id of the tenant
-    ErrorResponse:
+    RestException:
       type: object
       properties:
-        key:
+        errorCode:
+          type: string
+        message:
           type: string
         parameters:
           type: array
           items:
-            type: string
-        details:
-          type: array
-          items:
-            type: string
+            type: object
