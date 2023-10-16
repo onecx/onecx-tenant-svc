@@ -5,45 +5,58 @@ info:
 servers:
   - url: https://localhost:8080
 tags:
-  - name: Customer
-    description: Customer specific data.
+  - name: TenantV1
+    description: Execute tenant CRUD operations
 paths:
-  /customer:
-      post:
+  /v1/tenant:
+      get:
         tags:
-          - Customer
-        summary: Create Customer
-        operationId: createCustomer
-        requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Customer'
+          - TenantV1
+        summary: Get Tenants by configurable field from token
+        operationId: getTenantMapsByOrgId
         responses:
-          '200':
+          "200":
             description: OK
             content:
-              'application/json':
+              "application/json":
                 schema:
-                  $ref: '#/components/schemas/CustomerFullData'
+                  $ref: "#/components/schemas/ResponseTenantMap"
+          "400":
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
+          "404":
+            description: Not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
 components:
   schemas:
-    Customer:
+    ResponseTenantMap:
+      required:
+      - TenantMap
       type: object
       properties:
-        firstName:
+        tenantMap:
+          $ref: '#/components/schemas/TenantMap'
+    TenantMap:
+      type: object
+      properties:
+        tenantId:
+          type: integer
+          default: 10
+          description: Id of the tenant
+    RestException:
+      type: object
+      properties:
+        errorCode:
           type: string
-          description: First name of the customer
-        lastName:
+        message:
           type: string
-          description: Last name of the customer
-    CustomerFullData:
-      allOf:
-        - $ref: '#/components/schemas/Customer'
-        - type: object
-          properties:
-            customerId:
-              type: integer
-              description: The ID of the customer
-              format: int64
-      description: Full data of the customer.
+        parameters:
+          type: array
+          items:
+            type: object

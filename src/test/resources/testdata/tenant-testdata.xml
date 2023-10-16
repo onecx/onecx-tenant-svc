@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <tenant_map creationdate="2021-03-24" guid="1" optlock="1" org_id="1234" tenant_id="10"/>
+    <tenant_map creationdate="2021-03-24" guid="2" optlock="1" org_id="1111" tenant_id="11"/>
+</dataset>
