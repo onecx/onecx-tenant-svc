@@ -1,6 +1,7 @@
 package org.onecx.tenantsvc.domain.mappers;
 
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+import static java.lang.Boolean.TRUE;
 import static org.onecx.tenantsvc.domain.mappers.DefaultExceptionMapper.Error.*;
 
 import java.util.Locale;
@@ -51,8 +52,8 @@ public class DefaultExceptionMapper implements ExceptionMapper<Exception> {
     public Response toResponse(Exception e) {
 
         var logException = ConfigProvider.getConfig().getOptionalValue("tkit.rs.mapper.log", Boolean.class);
-        if (logException.isEmpty() || logException.get()) {
-            log.error("REST exception URL:{},ERROR:{}", uriInfo.getRequestUri(), e.getMessage());
+        if (logException.isEmpty() || TRUE.equals(logException.get())) {
+            log.error("REST exception ERROR:{}", e.getMessage());
         }
         if (e instanceof WebApplicationException wae) {
             return createResponse(wae);
