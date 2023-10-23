@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.onecx.tenantsvc.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.io.github.onecx.tenantsvc.v1.model.ResponseTenantMapDTOV1;
+import gen.io.github.onecx.tenantsvc.v1.model.TenantMapDTOV1;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.keycloak.client.KeycloakTestClient;
@@ -25,6 +25,8 @@ class TenantControllerV1Test extends AbstractTest {
     private static String tokenWithoutOrgId;
     private static final KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
+    private static final String APM_HEADER_TOKEN = "apm-principal-token";
+
     @BeforeAll
     static void setUp() {
 
@@ -37,23 +39,20 @@ class TenantControllerV1Test extends AbstractTest {
     void getTenantMapsByOrgId_shouldReturnTenantId() {
 
         var response = given()
-                .auth()
-                .oauth2(token)
+                .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get();
 
-        response.then().statusCode(OK.getStatusCode());
-        var tenantDTO = response.as(ResponseTenantMapDTOV1.class).getTenantMap();
+        response.then().log().all().statusCode(OK.getStatusCode());
+        var tenantDTO = response.as(TenantMapDTOV1.class);
         assertEquals(10, tenantDTO.getTenantId());
     }
 
     @Test
     void getTenantMapsByOrgId_shouldReturnNotFound_whenTenantWithOrgIdDoesNotExist() {
 
-        given()
-                .auth()
-                .oauth2(tokenWithNotExistingOrgId)
+        given().header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -75,9 +74,7 @@ class TenantControllerV1Test extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnBadRequest_whenTokenUserHasNoOrgId() {
 
-        given()
-                .auth()
-                .oauth2(tokenWithoutOrgId)
+        given().header(APM_HEADER_TOKEN, tokenWithoutOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()

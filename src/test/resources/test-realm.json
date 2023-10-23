@@ -488,7 +488,8 @@
       "lastName": "Keycloak",
       "enabled": true,
       "attributes" : {
-        "orgId" : "1234"
+        "orgId" : "1234",
+        "test1" : "test"
       },
       "credentials": [
         {

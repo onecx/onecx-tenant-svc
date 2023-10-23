@@ -8,14 +8,10 @@ import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.*;
 
-@Builder(toBuilder = true)
 @Getter
 @Setter
 @Entity
 @Table(name = "tenant_map")
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 public class TenantMap extends TraceableEntity {
 
     @Column(name = "org_id", unique = true)

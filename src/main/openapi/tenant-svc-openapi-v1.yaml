@@ -20,7 +20,7 @@ paths:
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/ResponseTenantMap"
+                  $ref: "#/components/schemas/TenantMap"
           "400":
             description: Bad request
             content:
@@ -35,14 +35,9 @@ paths:
                   $ref: '#/components/schemas/RestException'
 components:
   schemas:
-    ResponseTenantMap:
-      required:
-      - TenantMap
-      type: object
-      properties:
-        tenantMap:
-          $ref: '#/components/schemas/TenantMap'
     TenantMap:
+      required:
+        - tenantId
       type: object
       properties:
         tenantId:

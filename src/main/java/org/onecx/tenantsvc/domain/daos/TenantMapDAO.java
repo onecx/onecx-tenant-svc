@@ -7,6 +7,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 
 import org.onecx.tenantsvc.domain.models.TenantMap;
+import org.onecx.tenantsvc.domain.models.TenantMap_;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 
 @ApplicationScoped
@@ -19,7 +20,7 @@ public class TenantMapDAO extends AbstractDAO<TenantMap> {
         var cq = cb.createQuery(TenantMap.class);
         var root = cq.from(TenantMap.class);
 
-        cq.where(cb.equal(root.get("orgId"), orgId));
+        cq.where(cb.equal(root.get(TenantMap_.ORG_ID), orgId));
         var typedQuery = this.em.createQuery(cq);
 
         try {
@@ -37,7 +38,7 @@ public class TenantMapDAO extends AbstractDAO<TenantMap> {
         var cq = cb.createQuery(Integer.class);
         var root = cq.from(TenantMap.class);
 
-        cq.select(cb.max(root.get("tenantId")));
+        cq.select(cb.max(root.get(TenantMap_.TENANT_ID)));
         var typedQuery = this.em.createQuery(cq);
         return typedQuery.getSingleResult();
     }
