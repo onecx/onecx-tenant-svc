@@ -71,6 +71,20 @@ class TenantControllerV1Test extends AbstractTest {
                 .get()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
+
+        given().header(APM_HEADER_TOKEN, "")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given().header(APM_HEADER_TOKEN, "this_is_not_token")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
