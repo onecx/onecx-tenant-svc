@@ -12,6 +12,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "tenant_map")
+@SuppressWarnings("java:S2160")
 public class TenantMap extends TraceableEntity {
 
     @Column(name = "org_id", unique = true)
