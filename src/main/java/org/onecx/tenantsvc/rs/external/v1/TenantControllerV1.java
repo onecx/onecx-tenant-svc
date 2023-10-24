@@ -15,7 +15,6 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwx.JsonWebStructure;
@@ -23,6 +22,7 @@ import org.onecx.tenantsvc.domain.daos.TenantMapDAO;
 
 import gen.io.github.onecx.tenantsvc.v1.TenantV1Api;
 import gen.io.github.onecx.tenantsvc.v1.model.TenantMapDTOV1;
+import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +40,12 @@ public class TenantControllerV1 implements TenantV1Api {
     @ConfigProperty(name = "onecx.tenant-svc.token.verified")
     boolean verified;
 
+    @ConfigProperty(name = "onecx.tenant-svc.token.issuer.public-key-location.suffix", defaultValue = "/protocol/openid-connect/certs")
+    String issuerPublicKeyLocationSuffix;
+
+    @ConfigProperty(name = "onecx.tenant-svc.token.issuer.public-key-location.enabled")
+    boolean issuerEnabled;
+
     @ConfigProperty(name = "onecx.tenant-svc.header.token")
     String headerParam;
 
@@ -48,6 +54,9 @@ public class TenantControllerV1 implements TenantV1Api {
 
     @Inject
     JWTParser parser;
+
+    @Inject
+    JWTAuthContextInfo authContextInfo;
 
     @Override
     public Response getTenantMapsByOrgId() {
@@ -62,20 +71,32 @@ public class TenantControllerV1 implements TenantV1Api {
         Optional<String> organizationClaim;
         try {
             if (verified) {
-                JsonWebToken token = parser.parse(apmPrincipalToken);
+                var info = authContextInfo;
+
+                // get public key location from issuer URL
+                if (issuerEnabled) {
+                    var jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
+                    var jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
+                    var publicKeyLocation = jwtClaims.getIssuer() + issuerPublicKeyLocationSuffix;
+                    info = new JWTAuthContextInfo(authContextInfo);
+                    info.setPublicKeyLocation(publicKeyLocation);
+                }
+
+                var token = parser.parse(apmPrincipalToken, info);
                 organizationClaim = token.claim(orgClaim);
             } else {
-                JsonWebSignature jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
-                JwtClaims jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
+                var jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
+                var jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
                 organizationClaim = Optional.of(jwtClaims.getClaimValueAsString(orgClaim));
             }
         } catch (Exception e) {
+            log.error("Failed to verify a token. Error: {}", e.getMessage());
             return Response.status(BAD_REQUEST).entity(e.getMessage()).build();
         }
 
         // read claim
         if (organizationClaim.isEmpty()) {
-            log.error(format("Could not find organization field '%s' in the ID token", orgClaim));
+            log.error("Could not find organization field '{}' in the ID token", orgClaim);
             return Response.status(BAD_REQUEST).entity(format("Could not read org ID of field: %s ", orgClaim)).build();
         }
         var organizationId = organizationClaim.get();
