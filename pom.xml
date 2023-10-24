@@ -9,19 +9,11 @@
         <artifactId>onecx-quarkus3-parent</artifactId>
         <version>0.13.0</version>
     </parent>
-    <groupId>org.onecx</groupId>
-    <artifactId>onecx-tenant-svc</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
-    <properties>
-        <maven.compiler.release>17</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <skipITs>true</skipITs>
-    </properties>
+    <artifactId>onecx-tenant-svc</artifactId>
+    <version>999-SNAPSHOT</version>
 
     <dependencies>
-
         <!-- 1000kit -->
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
@@ -52,10 +44,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-scheduler</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -96,6 +84,10 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-oidc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-opentelemetry</artifactId>
         </dependency>
 
         <!-- OTHER -->

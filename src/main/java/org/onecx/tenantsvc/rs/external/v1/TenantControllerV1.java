@@ -5,18 +5,25 @@ import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static java.lang.String.format;
 
+import java.util.Optional;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
-import org.onecx.tenantsvc.control.services.JWTService;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwx.JsonWebStructure;
 import org.onecx.tenantsvc.domain.daos.TenantMapDAO;
-import org.onecx.tenantsvc.domain.exceptions.CouldNotReadFieldOfTokenException;
 
 import gen.io.github.onecx.tenantsvc.v1.TenantV1Api;
-import gen.io.github.onecx.tenantsvc.v1.model.ResponseTenantMapDTOV1;
 import gen.io.github.onecx.tenantsvc.v1.model.TenantMapDTOV1;
+import io.smallrye.jwt.auth.principal.JWTParser;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -26,29 +33,63 @@ public class TenantControllerV1 implements TenantV1Api {
 
     @Inject
     TenantMapDAO tenantMapDAO;
+
+    @ConfigProperty(name = "onecx.tenant-svc.token.claim.org-id")
+    String orgClaim;
+
+    @ConfigProperty(name = "onecx.tenant-svc.token.verified")
+    boolean verified;
+
+    @ConfigProperty(name = "onecx.tenant-svc.header.token")
+    String headerParam;
+
+    @Context
+    HttpHeaders headers;
+
     @Inject
-    JWTService jwtService;
+    JWTParser parser;
 
     @Override
     public Response getTenantMapsByOrgId() {
 
-        String orgId;
+        // read token from header
+        var apmPrincipalToken = headers.getHeaderString(headerParam);
+        if (apmPrincipalToken == null || apmPrincipalToken.isBlank()) {
+            return Response.status(BAD_REQUEST).entity("Missing APM principal token: " + headerParam).build();
+        }
+
+        // parse and verify? token
+        Optional<String> organizationClaim;
         try {
-            orgId = jwtService.readOrgIdFromAuthToken();
-        } catch (CouldNotReadFieldOfTokenException e) {
+            if (verified) {
+                JsonWebToken token = parser.parse(apmPrincipalToken);
+                organizationClaim = token.claim(orgClaim);
+            } else {
+                JsonWebSignature jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
+                JwtClaims jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
+                organizationClaim = Optional.of(jwtClaims.getClaimValueAsString(orgClaim));
+            }
+        } catch (Exception e) {
             return Response.status(BAD_REQUEST).entity(e.getMessage()).build();
         }
 
-        var tenantId = tenantMapDAO.findTenantIdByOrgId(orgId);
+        // read claim
+        if (organizationClaim.isEmpty()) {
+            log.error(format("Could not find organization field '%s' in the ID token", orgClaim));
+            return Response.status(BAD_REQUEST).entity(format("Could not read org ID of field: %s ", orgClaim)).build();
+        }
+        var organizationId = organizationClaim.get();
+
+        // find tenant ID for the organizationId
+        var tenantId = tenantMapDAO.findTenantIdByOrgId(organizationId);
         if (tenantId.isEmpty()) {
-            return Response.status(NOT_FOUND).entity(format("Did not find tenant map for org ID: %s", orgId)).build();
+            return Response.status(NOT_FOUND).entity(format("Did not find tenant map for org ID: %s", organizationId)).build();
         }
 
-        var tenantResponseDTO = new ResponseTenantMapDTOV1();
         var tenantMapDTO = new TenantMapDTOV1();
         tenantMapDTO.setTenantId(tenantId.get());
-        tenantResponseDTO.setTenantMap(tenantMapDTO);
 
-        return Response.ok(tenantResponseDTO).build();
+        return Response.ok(tenantMapDTO).build();
     }
+
 }
