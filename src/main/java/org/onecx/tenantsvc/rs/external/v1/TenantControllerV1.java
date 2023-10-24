@@ -5,6 +5,8 @@ import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static java.lang.String.format;
 
+import java.util.Optional;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -14,6 +16,9 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jose4j.jws.JsonWebSignature;
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwx.JsonWebStructure;
 import org.onecx.tenantsvc.domain.daos.TenantMapDAO;
 
 import gen.io.github.onecx.tenantsvc.v1.TenantV1Api;
@@ -31,6 +36,9 @@ public class TenantControllerV1 implements TenantV1Api {
 
     @ConfigProperty(name = "onecx.tenant-svc.token.claim.org-id")
     String orgClaim;
+
+    @ConfigProperty(name = "onecx.tenant-svc.token.verified")
+    boolean verified;
 
     @ConfigProperty(name = "onecx.tenant-svc.header.token")
     String headerParam;
@@ -50,21 +58,27 @@ public class TenantControllerV1 implements TenantV1Api {
             return Response.status(BAD_REQUEST).entity("Missing APM principal token: " + headerParam).build();
         }
 
-        // parse and verify token
-        JsonWebToken token;
+        // parse and verify? token
+        Optional<String> organizationClaim;
         try {
-            token = parser.parse(apmPrincipalToken);
+            if (verified) {
+                JsonWebToken token = parser.parse(apmPrincipalToken);
+                organizationClaim = token.claim(orgClaim);
+            } else {
+                JsonWebSignature jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
+                JwtClaims jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
+                organizationClaim = Optional.of(jwtClaims.getClaimValueAsString(orgClaim));
+            }
         } catch (Exception e) {
             return Response.status(BAD_REQUEST).entity(e.getMessage()).build();
         }
 
         // read claim
-        var orgIdClaim = token.claim(orgClaim);
-        if (orgIdClaim.isEmpty()) {
+        if (organizationClaim.isEmpty()) {
             log.error(format("Could not find organization field '%s' in the ID token", orgClaim));
             return Response.status(BAD_REQUEST).entity(format("Could not read org ID of field: %s ", orgClaim)).build();
         }
-        var organizationId = orgIdClaim.get().toString();
+        var organizationId = organizationClaim.get();
 
         // find tenant ID for the organizationId
         var tenantId = tenantMapDAO.findTenantIdByOrgId(organizationId);

@@ -31,7 +31,6 @@ class TenantControllerV1Test extends AbstractTest {
 
     @BeforeAll
     static void setUp() {
-
         token = keycloakClient.getAccessToken("user_with_orgId_1234");
         tokenWithNotExistingOrgId = keycloakClient.getAccessToken("user_with_orgId_2222");
         tokenWithoutOrgId = keycloakClient.getAccessToken("user_with_no_orgId");
