@@ -1,0 +1,12 @@
+---
+openapi: 3.0.3
+paths:
+components:
+  schemas:
+    TenantImport:
+      type: object
+      properties:
+        default:
+          type: string
+      additionalProperties:
+        type: integer
