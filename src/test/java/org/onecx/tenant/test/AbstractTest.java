@@ -9,6 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.restassured.config.RestAssuredConfig;
 
+@SuppressWarnings("java:S2187")
 public class AbstractTest {
 
     static {

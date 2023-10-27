@@ -22,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
-public class TenantImportServiceTest extends AbstractTest {
+class TenantImportServiceTest extends AbstractTest {
 
     @Inject
     TenantImportService service;
