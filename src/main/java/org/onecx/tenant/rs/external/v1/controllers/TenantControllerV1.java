@@ -1,4 +1,4 @@
-package org.onecx.tenant.rs.external.v1;
+package org.onecx.tenant.rs.external.v1.controllers;
 
 import static jakarta.transaction.Transactional.TxType.NOT_SUPPORTED;
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
@@ -10,18 +10,24 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwx.JsonWebStructure;
 import org.onecx.tenant.domain.daos.TenantMapDAO;
+import org.onecx.tenant.rs.external.v1.mappers.TenantMapperV1;
+import org.tkit.quarkus.jpa.exceptions.DAOException;
 
-import gen.io.github.onecx.tenantsvc.v1.TenantV1Api;
-import gen.io.github.onecx.tenantsvc.v1.model.TenantMapDTOV1;
+import gen.io.github.onecx.tenant.v1.TenantV1Api;
+import gen.io.github.onecx.tenant.v1.model.RestExceptionDTOV1;
+import gen.io.github.onecx.tenant.v1.model.TenantMapDTOV1;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +35,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ApplicationScoped
 @Transactional(value = NOT_SUPPORTED)
+@Path("/v1/tenant")
 public class TenantControllerV1 implements TenantV1Api {
 
     @Inject
-    TenantMapDAO tenantMapDAO;
+    TenantMapDAO dao;
 
     @ConfigProperty(name = "onecx.tenant-svc.token.claim.org-id")
     String orgClaim;
@@ -57,6 +64,9 @@ public class TenantControllerV1 implements TenantV1Api {
 
     @Inject
     JWTAuthContextInfo authContextInfo;
+
+    @Inject
+    TenantMapperV1 mapper;
 
     @Override
     public Response getTenantMapsByOrgId() {
@@ -102,7 +112,7 @@ public class TenantControllerV1 implements TenantV1Api {
         var organizationId = organizationClaim.get();
 
         // find tenant ID for the organizationId
-        var tenantId = tenantMapDAO.findTenantIdByOrgId(organizationId);
+        var tenantId = dao.findTenantIdByOrgId(organizationId);
         if (tenantId.isEmpty()) {
             return Response.status(NOT_FOUND).entity(format("Did not find tenant map for org ID: %s", organizationId)).build();
         }
@@ -113,4 +123,15 @@ public class TenantControllerV1 implements TenantV1Api {
         return Response.ok(tenantMapDTO).build();
     }
 
+    @ServerExceptionMapper
+    public RestResponse<RestExceptionDTOV1> exception(Exception ex) {
+        log.error("Process external rest-controller v1 error:{}", ex.getMessage());
+        if (ex instanceof DAOException de) {
+            return RestResponse.status(Response.Status.BAD_REQUEST,
+                    mapper.exception(de.getMessageKey().name(), ex.getMessage(), de.parameters));
+        }
+        return RestResponse.status(Response.Status.INTERNAL_SERVER_ERROR,
+                mapper.exception("UNDEFINED_ERROR_CODE", ex.getMessage()));
+
+    }
 }

@@ -1,4 +1,4 @@
-package org.onecx.tenant.rs.internal;
+package org.onecx.tenant.rs.internal.controllers;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
