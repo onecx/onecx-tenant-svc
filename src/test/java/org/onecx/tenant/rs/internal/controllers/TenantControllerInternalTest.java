@@ -1,19 +1,18 @@
-package org.onecx.tenant.rs.internal;
+package org.onecx.tenant.rs.internal.controllers;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+
 import org.junit.jupiter.api.Test;
-import org.onecx.tenant.rs.internal.controllers.TenantControllerInternal;
 import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.io.github.onecx.tenantsvc.rs.internal.model.InputTenantMapDTO;
-import gen.io.github.onecx.tenantsvc.rs.internal.model.RequestTenantMapDTO;
-import gen.io.github.onecx.tenantsvc.rs.internal.model.ResponseTenantMapDTO;
-import gen.io.github.onecx.tenantsvc.rs.internal.model.ResponseTenantMapsDTO;
+import gen.io.github.onecx.tenant.rs.internal.model.*;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -30,7 +29,9 @@ class TenantControllerInternalTest extends AbstractTest {
         var response = given()
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(String.format("?pageNumber=%s&pageSize=%s", pageNumber, pageSize));
+                .queryParam("pageNumber", pageNumber)
+                .queryParam("pageSize", pageSize)
+                .get();
 
         response.then().statusCode(OK.getStatusCode());
         var tenantMapDTOS = response.as(ResponseTenantMapsDTO.class);
@@ -98,30 +99,38 @@ class TenantControllerInternalTest extends AbstractTest {
     @Test
     void createTenantMap() {
 
-        var orgId = "5678";
-        var requestTenantMapDTO = new RequestTenantMapDTO();
-        var inputTenantMapDTO = new InputTenantMapDTO();
-        inputTenantMapDTO.setOrgId(orgId);
+        var requestTenantMapDTO = new CreateRequestTenantMapDTO();
+        var inputTenantMapDTO = new CreateInputTenantMapDTO();
+        inputTenantMapDTO.setOrgId("5678");
+        inputTenantMapDTO.setTenantId(12);
         requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
 
-        var response = given()
+        var uri = given()
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(requestTenantMapDTO)
-                .post();
+                .post()
+                .then().statusCode(CREATED.getStatusCode())
+                .extract().header(HttpHeaders.LOCATION);
 
-        response.then().statusCode(CREATED.getStatusCode());
-        var tenantMapDTO = response.as(ResponseTenantMapDTO.class).getTenantMap();
-        assertThat(tenantMapDTO.getTenantId()).isEqualTo(12);
-        assertThat(tenantMapDTO.getOrgId()).isEqualTo(orgId);
+        var dto = given()
+                .contentType(APPLICATION_JSON)
+                .get(uri)
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .extract()
+                .body().as(TenantMapDTO.class);
+
+        assertThat(dto.getTenantId()).isEqualTo(inputTenantMapDTO.getTenantId());
+        assertThat(dto.getOrgId()).isEqualTo(inputTenantMapDTO.getOrgId());
     }
 
     @Test
     void createTenantMap_shouldReturnBadRequest_whenOrgIdUniqueConstraintIsViolated() {
 
         var orgId = "1234";
-        var requestTenantMapDTO = new RequestTenantMapDTO();
-        var inputTenantMapDTO = new InputTenantMapDTO();
+        var requestTenantMapDTO = new CreateRequestTenantMapDTO();
+        var inputTenantMapDTO = new CreateInputTenantMapDTO();
         inputTenantMapDTO.setOrgId(orgId);
         requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
 

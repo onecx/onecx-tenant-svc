@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.14.0</version>
+        <version>0.15.0</version>
     </parent>
 
     <artifactId>onecx-tenant-svc</artifactId>
@@ -63,11 +63,15 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy</artifactId>
+            <artifactId>quarkus-resteasy-reactive</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-resteasy-jackson</artifactId>
+            <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -170,8 +174,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/tenant-svc-openapi-internal.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.tenantsvc.rs.internal</apiPackage>
-                            <modelPackage>gen.io.github.onecx.tenantsvc.rs.internal.model</modelPackage>
+                            <apiPackage>gen.io.github.onecx.tenant.rs.internal</apiPackage>
+                            <modelPackage>gen.io.github.onecx.tenant.rs.internal.model</modelPackage>
                         </configuration>
                     </execution>
                     <execution>
@@ -181,8 +185,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/tenant-svc-openapi-v1.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.tenantsvc.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.tenantsvc.v1.model</modelPackage>
+                            <apiPackage>gen.io.github.onecx.tenant.v1</apiPackage>
+                            <modelPackage>gen.io.github.onecx.tenant.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <skipValidateSpec>true</skipValidateSpec>
                         </configuration>
@@ -194,8 +198,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/tenant-svc-openapi-di-v1.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.tenantsvc.di.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.tenantsvc.di.v1.model</modelPackage>
+                            <apiPackage>gen.io.github.onecx.tenant.di.v1</apiPackage>
+                            <modelPackage>gen.io.github.onecx.tenant.di.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <skipValidateSpec>true</skipValidateSpec>
                         </configuration>

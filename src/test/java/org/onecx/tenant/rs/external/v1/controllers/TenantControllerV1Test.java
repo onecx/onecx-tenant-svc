@@ -1,4 +1,4 @@
-package org.onecx.tenant.rs.external.v1;
+package org.onecx.tenant.rs.external.v1.controllers;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.io.github.onecx.tenantsvc.v1.model.TenantMapDTOV1;
+import gen.io.github.onecx.tenant.v1.model.TenantMapDTOV1;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.keycloak.client.KeycloakTestClient;

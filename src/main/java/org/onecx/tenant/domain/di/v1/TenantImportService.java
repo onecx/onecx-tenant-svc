@@ -17,7 +17,7 @@ import org.tkit.quarkus.dataimport.DataImportService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gen.io.github.onecx.tenantsvc.di.v1.model.TenantImportDTOV1;
+import gen.io.github.onecx.tenant.di.v1.model.TenantImportDTOV1;
 
 @DataImport("tenant")
 public class TenantImportService implements DataImportService {

@@ -45,10 +45,37 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/RequestTenantMap'
+                  $ref: '#/components/schemas/CreateRequestTenantMap'
         responses:
           "201":
             description: Created
+          "400":
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
+          "404":
+            description: Not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/RestException'
+  /internal/tenant/{id}:
+      get:
+        tags:
+          - TenantInternal
+        summary: Get Tenant map by GUID
+        operationId: getTenantMapById
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          "200":
+            description: OK
             content:
               "application/json":
                 schema:
@@ -65,7 +92,6 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/RestException'
-  /internal/tenant/{id}:
       put:
         tags:
           - TenantInternal
@@ -104,6 +130,13 @@ paths:
 
 components:
   schemas:
+    CreateRequestTenantMap:
+      required:
+        - InputTenantMap
+      type: object
+      properties:
+        inputTenantMap:
+          $ref: '#/components/schemas/CreateInputTenantMap'
     RequestTenantMap:
       required:
         - InputTenantMap
@@ -127,6 +160,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TenantMap'
+    CreateInputTenantMap:
+      required:
+        - orgId
+      type: object
+      properties:
+        orgId:
+          type: string
+          description: Id of the organization
+        tenantId:
+          type: integer
+          description: Id of the tenant
     InputTenantMap:
       required:
         - orgId
