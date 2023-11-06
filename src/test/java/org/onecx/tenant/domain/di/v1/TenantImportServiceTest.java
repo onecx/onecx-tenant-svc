@@ -60,9 +60,9 @@ class TenantImportServiceTest extends AbstractTest {
     void importCleanInsertTest() {
 
         TenantImportDTOV1 data = new TenantImportDTOV1();
-        data.put("A", 1);
-        data.put("B", 2);
-        data.put("C", 3);
+        data.put("A", "1");
+        data.put("B", "2");
+        data.put("C", "3");
 
         service.importData(new DataImportConfig() {
             @Override

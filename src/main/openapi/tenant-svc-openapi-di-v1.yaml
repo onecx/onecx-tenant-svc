@@ -1,6 +1,22 @@
 ---
 openapi: 3.0.3
+info:
+  title: onecx-tenant data import
+  version: 1.0.0
+servers:
+  - url: "http://localhost"
 paths:
+  /import/tenant:
+    post:
+      operationId: importTenant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantImport'
+      responses:
+        200:
+          description: ok
 components:
   schemas:
     TenantImport:
@@ -9,4 +25,4 @@ components:
         default:
           type: string
       additionalProperties:
-        type: integer
+        type: string

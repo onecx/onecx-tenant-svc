@@ -47,7 +47,7 @@ class TenantControllerV1Test extends AbstractTest {
 
         response.then().log().all().statusCode(OK.getStatusCode());
         var tenantDTO = response.as(TenantMapDTOV1.class);
-        assertEquals(10, tenantDTO.getTenantId());
+        assertEquals("10", tenantDTO.getTenantId());
     }
 
     @Test

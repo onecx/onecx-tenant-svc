@@ -56,7 +56,7 @@ class TenantControllerInternalTest extends AbstractTest {
 
         response.then().statusCode(OK.getStatusCode());
         var tenantMapDTO = response.as(ResponseTenantMapDTO.class).getTenantMap();
-        assertThat(tenantMapDTO.getTenantId()).isEqualTo(10);
+        assertThat(tenantMapDTO.getTenantId()).isEqualTo("10");
         assertThat(tenantMapDTO.getOrgId()).isEqualTo(orgId);
     }
 
@@ -102,7 +102,7 @@ class TenantControllerInternalTest extends AbstractTest {
         var requestTenantMapDTO = new CreateRequestTenantMapDTO();
         var inputTenantMapDTO = new CreateInputTenantMapDTO();
         inputTenantMapDTO.setOrgId("5678");
-        inputTenantMapDTO.setTenantId(12);
+        inputTenantMapDTO.setTenantId("12");
         requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
 
         var uri = given()
@@ -123,6 +123,16 @@ class TenantControllerInternalTest extends AbstractTest {
 
         assertThat(dto.getTenantId()).isEqualTo(inputTenantMapDTO.getTenantId());
         assertThat(dto.getOrgId()).isEqualTo(inputTenantMapDTO.getOrgId());
+    }
+
+    @Test
+    void createTenantMap_EmptyBody() {
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post()
+                .then().statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test

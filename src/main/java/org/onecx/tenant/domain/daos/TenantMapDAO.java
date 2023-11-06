@@ -15,7 +15,7 @@ import org.tkit.quarkus.jpa.exceptions.DAOException;
 public class TenantMapDAO extends AbstractDAO<TenantMap> {
 
     @Transactional
-    public Optional<Integer> findTenantIdByOrgId(String orgId) {
+    public Optional<String> findTenantIdByOrgId(String orgId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(TenantMap.class);

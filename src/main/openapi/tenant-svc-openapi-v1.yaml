@@ -41,8 +41,7 @@ components:
       type: object
       properties:
         tenantId:
-          type: integer
-          default: 10
+          type: string
           description: Id of the tenant
     RestException:
       type: object
