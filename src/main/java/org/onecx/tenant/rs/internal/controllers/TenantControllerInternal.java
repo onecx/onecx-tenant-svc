@@ -7,6 +7,7 @@ import static java.lang.String.format;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
@@ -17,7 +18,6 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.onecx.tenant.domain.daos.TenantMapDAO;
 import org.onecx.tenant.rs.internal.mappers.TenantMapMapper;
 import org.tkit.quarkus.jpa.daos.Page;
-import org.tkit.quarkus.jpa.exceptions.DAOException;
 
 import gen.io.github.onecx.tenant.rs.internal.TenantInternalApi;
 import gen.io.github.onecx.tenant.rs.internal.model.CreateRequestTenantMapDTO;
@@ -89,15 +89,11 @@ public class TenantControllerInternal implements TenantInternalApi {
 
     @ServerExceptionMapper
     public RestResponse<RestExceptionDTO> exception(Exception ex) {
-        log.error("Processing internal rest controller error: {}", ex.getMessage());
+        return mapper.exception(ex);
+    }
 
-        if (ex instanceof DAOException de) {
-
-            return RestResponse.status(Response.Status.BAD_REQUEST,
-                    mapper.exception(de.getMessageKey().name(), ex.getMessage(), de.parameters));
-        }
-        return RestResponse.status(Response.Status.INTERNAL_SERVER_ERROR,
-                mapper.exception("UNDEFINED_ERROR_CODE", ex.getMessage()));
-
+    @ServerExceptionMapper
+    public RestResponse<RestExceptionDTO> constraint(ConstraintViolationException ex) {
+        return mapper.constraint(ex);
     }
 }

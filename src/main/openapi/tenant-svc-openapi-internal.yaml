@@ -42,13 +42,20 @@ paths:
         summary: Post new Tenant map
         operationId: createTenantMap
         requestBody:
-            content:
+          required: true
+          content:
               application/json:
                 schema:
                   $ref: '#/components/schemas/CreateRequestTenantMap'
         responses:
           "201":
             description: Created
+            headers:
+              Location:
+                required: true
+                schema:
+                  type: string
+                  format: url
           "400":
             description: Bad request
             content:
@@ -169,7 +176,7 @@ components:
           type: string
           description: Id of the organization
         tenantId:
-          type: integer
+          type: string
           description: Id of the tenant
     InputTenantMap:
       required:
@@ -199,3 +206,14 @@ components:
           type: array
           items:
             type: object
+        validations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationConstraint'
+    ValidationConstraint:
+      type: object
+      properties:
+        parameter:
+          type: string
+        message:
+          type: string
