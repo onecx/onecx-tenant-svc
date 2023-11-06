@@ -25,7 +25,7 @@ import io.quarkus.test.keycloak.client.KeycloakTestClient;
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
 class TenantControllerV1ConfigTest extends AbstractTest {
 
-    private static final String APM_HEADER_TOKEN = ConfigProvider.getConfig().getValue("onecx.tenant-svc.header.token",
+    private static final String APM_HEADER_TOKEN = ConfigProvider.getConfig().getValue("onecx.tenant.header.token",
             String.class);
 
     @Test
@@ -52,7 +52,7 @@ class TenantControllerV1ConfigTest extends AbstractTest {
 
         @Override
         public Map<String, String> getConfigOverrides() {
-            return Map.of("onecx.tenant-svc.token.verified", "false");
+            return Map.of("onecx.tenant.token.verified", "false");
         }
     }
 }

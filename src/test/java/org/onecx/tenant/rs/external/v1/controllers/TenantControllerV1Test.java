@@ -26,7 +26,7 @@ class TenantControllerV1Test extends AbstractTest {
     private static String tokenWithoutOrgId;
     private static final KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
-    private static final String APM_HEADER_TOKEN = ConfigProvider.getConfig().getValue("onecx.tenant-svc.header.token",
+    private static final String APM_HEADER_TOKEN = ConfigProvider.getConfig().getValue("onecx.tenant.header.token",
             String.class);
 
     @BeforeAll
