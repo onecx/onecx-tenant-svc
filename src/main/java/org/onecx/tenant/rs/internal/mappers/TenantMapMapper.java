@@ -13,8 +13,11 @@ import gen.io.github.onecx.tenant.rs.internal.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface TenantMapMapper {
 
+    @Mapping(target = "parameters", ignore = true)
+    @Mapping(target = "removeParametersItem", ignore = true)
     RestExceptionDTO exception(String errorCode, String message);
 
+    @Mapping(target = "removeParametersItem", ignore = true)
     RestExceptionDTO exception(String errorCode, String message, List<Object> parameters);
 
     ResponseTenantMapDTO response(TenantMap tenantMap);
@@ -29,6 +32,14 @@ public interface TenantMapMapper {
 
     List<TenantMapDTO> map(List<TenantMap> tenantMap);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
     TenantMap create(CreateInputTenantMapDTO dto);
 
     @Mapping(target = "id", ignore = true)

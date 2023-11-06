@@ -186,8 +186,7 @@ components:
           type: string
           description: Id of the organization
         tenantId:
-          type: integer
-          default: 10
+          type: string
           description: Id of the tenant
     RestException:
       type: object

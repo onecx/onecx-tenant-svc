@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.15.0</version>
+        <version>0.16.0</version>
     </parent>
 
     <artifactId>onecx-tenant-svc</artifactId>
@@ -202,6 +202,7 @@
                             <modelPackage>gen.io.github.onecx.tenant.di.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <skipValidateSpec>true</skipValidateSpec>
+                            <generateApis>false</generateApis>
                         </configuration>
                     </execution>
                 </executions>

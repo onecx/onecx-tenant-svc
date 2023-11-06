@@ -19,5 +19,5 @@ public class TenantMap extends TraceableEntity {
     private String orgId;
 
     @Column(name = "tenant_id", unique = true)
-    private Integer tenantId;
+    private String tenantId;
 }
