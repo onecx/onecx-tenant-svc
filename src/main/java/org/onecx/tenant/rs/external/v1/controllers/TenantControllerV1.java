@@ -41,19 +41,19 @@ public class TenantControllerV1 implements TenantV1Api {
     @Inject
     TenantMapDAO dao;
 
-    @ConfigProperty(name = "onecx.tenant-svc.token.claim.org-id")
+    @ConfigProperty(name = "onecx.tenant.token.claim.org-id")
     String orgClaim;
 
-    @ConfigProperty(name = "onecx.tenant-svc.token.verified")
+    @ConfigProperty(name = "onecx.tenant.token.verified")
     boolean verified;
 
-    @ConfigProperty(name = "onecx.tenant-svc.token.issuer.public-key-location.suffix", defaultValue = "/protocol/openid-connect/certs")
+    @ConfigProperty(name = "onecx.tenant.token.issuer.public-key-location.suffix", defaultValue = "/protocol/openid-connect/certs")
     String issuerPublicKeyLocationSuffix;
 
-    @ConfigProperty(name = "onecx.tenant-svc.token.issuer.public-key-location.enabled")
+    @ConfigProperty(name = "onecx.tenant.token.issuer.public-key-location.enabled")
     boolean issuerEnabled;
 
-    @ConfigProperty(name = "onecx.tenant-svc.header.token")
+    @ConfigProperty(name = "onecx.tenant.header.token")
     String headerParam;
 
     @Context
