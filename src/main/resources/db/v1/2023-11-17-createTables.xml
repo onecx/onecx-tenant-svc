@@ -5,7 +5,7 @@
                    objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
     <changeSet author="dev (generated)" id="create-tables">
-        <createTable tableName="tenant_map">
+        <createTable tableName="tenant">
             <column name="guid" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="tenant_map_pkey"/>
             </column>
@@ -19,24 +19,8 @@
             <column name="org_id" type="VARCHAR(255)"/>
             <column name="tenant_id" type="VARCHAR(255)"/>
         </createTable>
-    </changeSet>
-
-    <changeSet author="dev (generated)" id="create-constraints">
-        <addUniqueConstraint columnNames="tenant_id" constraintName="ui_tenant_id" tableName="tenant_map"/>
-        <addUniqueConstraint columnNames="org_id" constraintName="ui_org_id" tableName="tenant_map"/>
-    </changeSet>
-
-    <changeSet author="dev (generated)" id="create-data-import-log">
-        <createTable tableName="dataimportlog">
-            <column name="id" type="VARCHAR(255)">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="dataimportlog_pkey"/>
-            </column>
-            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
-            <column name="file" type="VARCHAR(255)"/>
-            <column name="md5" type="VARCHAR(255)"/>
-            <column name="error" type="VARCHAR(255)"/>
-        </createTable>
+        <addUniqueConstraint columnNames="tenant_id" constraintName="ui_tenant_id" tableName="tenant"/>
+        <addUniqueConstraint columnNames="org_id" constraintName="ui_org_id" tableName="tenant"/>
     </changeSet>
 
 </databaseChangeLog>

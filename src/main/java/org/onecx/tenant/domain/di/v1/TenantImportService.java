@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import org.onecx.tenant.domain.daos.TenantMapDAO;
-import org.onecx.tenant.domain.models.TenantMap;
+import org.onecx.tenant.domain.daos.TenantDAO;
+import org.onecx.tenant.domain.models.Tenant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tkit.quarkus.dataimport.DataImport;
@@ -28,7 +28,7 @@ public class TenantImportService implements DataImportService {
     ObjectMapper mapper;
 
     @Inject
-    TenantMapDAO dao;
+    TenantDAO dao;
 
     @Override
     @Transactional(Transactional.TxType.REQUIRES_NEW)
@@ -68,9 +68,9 @@ public class TenantImportService implements DataImportService {
 
     private void cleanInsert(TenantImportDTOV1 data) {
 
-        List<TenantMap> tmp = new ArrayList<>();
+        List<Tenant> tmp = new ArrayList<>();
         data.forEach((k, v) -> {
-            var t = new TenantMap();
+            var t = new Tenant();
             t.setOrgId(k);
             t.setTenantId(v);
             tmp.add(t);

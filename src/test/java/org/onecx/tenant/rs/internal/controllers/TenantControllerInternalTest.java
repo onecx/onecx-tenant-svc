@@ -5,9 +5,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.ws.rs.core.HttpHeaders;
-import jakarta.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Test;
 import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
@@ -24,55 +21,82 @@ class TenantControllerInternalTest extends AbstractTest {
     @Test
     void getAllTenantMapsPageable() {
 
-        var pageNumber = 0;
-        var pageSize = 5;
-        var response = given()
+        var criteria = new TenantSearchCriteriaDTO();
+
+        criteria.setPageNumber(0);
+        criteria.setPageSize(5);
+
+        var dto = given()
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .queryParam("pageNumber", pageNumber)
-                .queryParam("pageSize", pageSize)
-                .get();
+                .body(criteria)
+                .post("search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(TenantPageResultDTO.class);
 
-        response.then().statusCode(OK.getStatusCode());
-        var tenantMapDTOS = response.as(ResponseTenantMapsDTO.class);
-        var tenantMaps = tenantMapDTOS.getTenantMaps();
-        assertThat(tenantMaps).hasSize(2);
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotNull().hasSize(2);
+
+        criteria.setOrgId(" ");
+
+        dto = given()
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .body(criteria)
+                .post("search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(TenantPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotNull().hasSize(2);
+
+        criteria.setOrgId("1234");
+
+        dto = given()
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .body(criteria)
+                .post("search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(TenantPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotNull().hasSize(1);
     }
 
     @Test
     void updateTenantMapById() {
 
-        var orgId = "5678";
-        var requestTenantMapDTO = new RequestTenantMapDTO();
-        var inputTenantMapDTO = new InputTenantMapDTO();
-        inputTenantMapDTO.setOrgId(orgId);
-        requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
+        var updateRequest = new UpdateTenantRequestDTO();
+        updateRequest.setOrgId("5678");
 
-        var response = given()
+        var dto = given()
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .body(requestTenantMapDTO)
-                .put("1");
+                .body(updateRequest)
+                .put("1")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(TenantDTO.class);
 
-        response.then().statusCode(OK.getStatusCode());
-        var tenantMapDTO = response.as(ResponseTenantMapDTO.class).getTenantMap();
-        assertThat(tenantMapDTO.getTenantId()).isEqualTo("10");
-        assertThat(tenantMapDTO.getOrgId()).isEqualTo(orgId);
+        assertThat(dto).isNotNull();
+        assertThat(dto.getOrgId()).isNotNull().isEqualTo(updateRequest.getOrgId());
+        assertThat(dto.getTenantId()).isNotNull().isEqualTo("10");
     }
 
     @Test
     void updateTenantMapById_shouldReturnNotFound_whenEntityDoesNotExist() {
 
-        var orgId = "5678";
-        var requestTenantMapDTO = new RequestTenantMapDTO();
-        var inputTenantMapDTO = new InputTenantMapDTO();
-        inputTenantMapDTO.setOrgId(orgId);
-        requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
+        var request = new UpdateTenantRequestDTO();
+        request.setOrgId("5678");
 
         given()
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .body(requestTenantMapDTO)
+                .body(request)
                 .put("3")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -81,48 +105,78 @@ class TenantControllerInternalTest extends AbstractTest {
     @Test
     void updateTenantMapById_shouldReturnBadRequest_whenOrgIdUniqueConstraintIsViolated() {
 
-        var orgId = "1111";
-        var requestTenantMapDTO = new RequestTenantMapDTO();
-        var inputTenantMapDTO = new InputTenantMapDTO();
-        inputTenantMapDTO.setOrgId(orgId);
-        requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
+        var request = new UpdateTenantRequestDTO();
+        request.setOrgId("1111");
 
         given()
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .body(requestTenantMapDTO)
+                .body(request)
                 .put("1")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
-    void createTenantMap() {
-
-        var requestTenantMapDTO = new CreateRequestTenantMapDTO();
-        var inputTenantMapDTO = new CreateInputTenantMapDTO();
-        inputTenantMapDTO.setOrgId("5678");
-        inputTenantMapDTO.setTenantId("12");
-        requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
-
-        var uri = given()
-                .contentType(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .body(requestTenantMapDTO)
-                .post()
-                .then().statusCode(CREATED.getStatusCode())
-                .extract().header(HttpHeaders.LOCATION);
+    void getTenantTest() {
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
-                .get(uri)
+                .accept(APPLICATION_JSON)
+                .get("1")
                 .then()
-                .statusCode(Response.Status.OK.getStatusCode())
-                .extract()
-                .body().as(TenantMapDTO.class);
+                .statusCode(OK.getStatusCode())
+                .extract().as(TenantDTO.class);
 
-        assertThat(dto.getTenantId()).isEqualTo(inputTenantMapDTO.getTenantId());
-        assertThat(dto.getOrgId()).isEqualTo(inputTenantMapDTO.getOrgId());
+        assertThat(dto.getTenantId()).isEqualTo("10");
+        assertThat(dto.getOrgId()).isEqualTo("1234");
+    }
+
+    @Test
+    void getTenantWrongIdTest() {
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get("does-not-exists")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void createTenantTest() {
+
+        var request = new CreateTenantRequestDTO();
+        request.setOrgId("12345");
+        request.setTenantId("12");
+
+        var dto = given()
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .body(request)
+                .post()
+                .then()
+                .statusCode(CREATED.getStatusCode())
+                .extract().as(TenantDTO.class);
+
+        assertThat(dto.getTenantId()).isEqualTo(request.getTenantId());
+        assertThat(dto.getOrgId()).isEqualTo(request.getOrgId());
+    }
+
+    @Test
+    void createTenantConstraintTest() {
+
+        var request = new CreateTenantRequestDTO();
+        request.setOrgId("1234");
+        request.setTenantId("12");
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .body(request)
+                .post()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
@@ -138,16 +192,13 @@ class TenantControllerInternalTest extends AbstractTest {
     @Test
     void createTenantMap_shouldReturnBadRequest_whenOrgIdUniqueConstraintIsViolated() {
 
-        var orgId = "1234";
-        var requestTenantMapDTO = new CreateRequestTenantMapDTO();
-        var inputTenantMapDTO = new CreateInputTenantMapDTO();
-        inputTenantMapDTO.setOrgId(orgId);
-        requestTenantMapDTO.setInputTenantMap(inputTenantMapDTO);
+        var request = new CreateTenantRequestDTO();
+        request.setOrgId("1234");
 
         given()
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .body(requestTenantMapDTO)
+                .body(request)
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
