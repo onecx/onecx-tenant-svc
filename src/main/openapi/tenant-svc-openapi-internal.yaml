@@ -5,48 +5,40 @@ info:
 servers:
   - url: https://localhost:8080
 tags:
-  - name: TenantInternal
-    description: Execute tenant CRUD operations
+  - name: tenantInternal
+    description: internal tenant service
 paths:
-  /internal/tenant:
-      get:
+  /internal/tenants/search:
+      post:
         tags:
           - TenantInternal
-        summary: Get all Tenant maps by page number and page size
-        operationId: getAllTenantMaps
-        parameters:
-          - name: pageNumber
-            in: query
-            schema:
-              format: int32
-              description: The number of page.
-              default: 0
-              type: integer
-          - name: pageSize
-            in: query
-            schema:
-              format: int32
-              description: The size of page
-              default: 100
-              type: integer
+        summary: Search tenants by criteria
+        operationId: searchTenants
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantSearchCriteria'
         responses:
           "200":
             description: OK
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/ResponseTenantMaps"
+                  $ref: "#/components/schemas/TenantPageResult"
+  /internal/tenants:
       post:
         tags:
-          - TenantInternal
-        summary: Post new Tenant map
-        operationId: createTenantMap
+          - tenantInternal
+        summary: Create new tenant
+        operationId: createTenant
         requestBody:
           required: true
           content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/CreateRequestTenantMap'
+                  $ref: '#/components/schemas/CreateTenantRequest'
         responses:
           "201":
             description: Created
@@ -61,19 +53,15 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/RestException'
+                  $ref: '#/components/schemas/ProblemDetailResponse'
           "404":
             description: Not found
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/RestException'
-  /internal/tenant/{id}:
+  /internal/tenants/{id}:
       get:
         tags:
-          - TenantInternal
+          - tenantInternal
         summary: Get Tenant map by GUID
-        operationId: getTenantMapById
+        operationId: getTenant
         parameters:
           - name: id
             in: path
@@ -86,24 +74,14 @@ paths:
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/ResponseTenantMap"
-          "400":
-            description: Bad request
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/RestException'
+                  $ref: "#/components/schemas/Tenant"
           "404":
             description: Not found
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/RestException'
       put:
         tags:
-          - TenantInternal
-        summary: Update Tenant map by GUID
-        operationId: updateTenantMapById
+          - tenantInternal
+        summary: Update tenant
+        operationId: updateTenant
         parameters:
         - name: id
           in: path
@@ -114,106 +92,132 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/RequestTenantMap'
+                  $ref: '#/components/schemas/UpdateTenantRequest'
         responses:
           "200":
             description: OK
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/ResponseTenantMap"
+                  $ref: "#/components/schemas/Tenant"
           "400":
             description: Bad request
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/RestException'
+                  $ref: '#/components/schemas/ProblemDetailResponse'
           "404":
             description: Not found
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/RestException'
-
 components:
   schemas:
-    CreateRequestTenantMap:
-      required:
-        - InputTenantMap
+    TenantSearchCriteria:
       type: object
       properties:
-        inputTenantMap:
-          $ref: '#/components/schemas/CreateInputTenantMap'
-    RequestTenantMap:
+        orgId:
+          nullable: true
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          type: integer
+    CreateTenantRequest:
+      type: object
       required:
-        - InputTenantMap
+        - orgId
+        - tenantId
+      properties:
+        orgId:
+          type: string
+          description: Id of the organization
+        tenantId:
+          type: string
+          description: Id of the tenant
+    UpdateTenantRequest:
+      type: object
+      required:
+        - orgId
+      properties:
+        orgId:
+          type: string
+          description: Id of the organization
+    TenantPageResult:
       type: object
       properties:
-        inputTenantMap:
-          $ref: '#/components/schemas/InputTenantMap'
-    ResponseTenantMap:
-      required:
-        - TenantMap
-      type: object
-      properties:
-        tenantMap:
-          $ref: '#/components/schemas/TenantMap'
-    ResponseTenantMaps:
-      required:
-        - TenantMap
-      type: object
-      properties:
-        tenantMaps:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
           type: array
           items:
-            $ref: '#/components/schemas/TenantMap'
-    CreateInputTenantMap:
-      required:
-        - orgId
+            $ref: '#/components/schemas/Tenant'
+    Tenant:
       type: object
       properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
         orgId:
           type: string
           description: Id of the organization
         tenantId:
           type: string
           description: Id of the tenant
-    InputTenantMap:
-      required:
-        - orgId
-      type: object
-      properties:
-        orgId:
-          type: string
-          description: Id of the organization
-    TenantMap:
-      type: object
-      properties:
-        orgId:
-          type: string
-          description: Id of the organization
-        tenantId:
-          type: string
-          description: Id of the tenant
-    RestException:
+    ProblemDetailResponse:
       type: object
       properties:
         errorCode:
           type: string
-        message:
+        detail:
           type: string
-        parameters:
+        params:
           type: array
           items:
-            type: object
-        validations:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
           type: array
           items:
-            $ref: '#/components/schemas/ValidationConstraint'
-    ValidationConstraint:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
       type: object
       properties:
-        parameter:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
           type: string
         message:
           type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00

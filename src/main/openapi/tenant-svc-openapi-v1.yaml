@@ -6,13 +6,13 @@ servers:
   - url: https://localhost:8080
 tags:
   - name: TenantV1
-    description: Execute tenant CRUD operations
+    description: External tenant service
 paths:
   /v1/tenant:
       get:
         tags:
           - TenantV1
-        summary: Get Tenants by configurable field from token
+        summary: Get tenant
         operationId: getTenantMapsByOrgId
         responses:
           "200":
@@ -20,22 +20,18 @@ paths:
             content:
               "application/json":
                 schema:
-                  $ref: "#/components/schemas/TenantMap"
+                  $ref: "#/components/schemas/TenantId"
           "400":
             description: Bad request
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/RestException'
+                  $ref: '#/components/schemas/ProblemDetailResponse'
           "404":
             description: Not found
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/RestException'
 components:
   schemas:
-    TenantMap:
+    TenantId:
       required:
         - tenantId
       type: object
@@ -43,14 +39,32 @@ components:
         tenantId:
           type: string
           description: Id of the tenant
-    RestException:
+    ProblemDetailResponse:
       type: object
       properties:
         errorCode:
           type: string
-        message:
+        detail:
           type: string
-        parameters:
+        params:
           type: array
           items:
-            type: object
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string

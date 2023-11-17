@@ -9,8 +9,8 @@ import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.onecx.tenant.domain.daos.TenantMapDAO;
-import org.onecx.tenant.domain.models.TenantMap;
+import org.onecx.tenant.domain.daos.TenantDAO;
+import org.onecx.tenant.domain.models.Tenant;
 import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.dataimport.DataImportConfig;
 import org.tkit.quarkus.test.WithDBData;
@@ -28,7 +28,7 @@ class TenantImportServiceTest extends AbstractTest {
     TenantImportService service;
 
     @Inject
-    TenantMapDAO dao;
+    TenantDAO dao;
 
     @Inject
     ObjectMapper mapper;
@@ -45,7 +45,7 @@ class TenantImportServiceTest extends AbstractTest {
         };
         service.importData(config);
 
-        List<TenantMap> data = dao.findAll().collect(Collectors.toList());
+        List<Tenant> data = dao.findAll().collect(Collectors.toList());
         Assertions.assertNotNull(data);
         Assertions.assertEquals(2, data.size());
 
@@ -80,7 +80,7 @@ class TenantImportServiceTest extends AbstractTest {
             }
         });
 
-        List<TenantMap> params = dao.findAll().collect(Collectors.toList());
+        List<Tenant> params = dao.findAll().collect(Collectors.toList());
         Assertions.assertNotNull(params);
         Assertions.assertEquals(3, params.size());
     }

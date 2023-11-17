@@ -1,8 +1,6 @@
 package org.onecx.tenant.rs.internal.controllers;
 
 import static jakarta.transaction.Transactional.TxType.NOT_SUPPORTED;
-import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
-import static java.lang.String.format;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,85 +13,79 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.onecx.tenant.domain.daos.TenantMapDAO;
-import org.onecx.tenant.rs.internal.mappers.TenantMapMapper;
-import org.tkit.quarkus.jpa.daos.Page;
+import org.onecx.tenant.domain.daos.TenantDAO;
+import org.onecx.tenant.rs.internal.mappers.TenantMapper;
+import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 
 import gen.io.github.onecx.tenant.rs.internal.TenantInternalApi;
-import gen.io.github.onecx.tenant.rs.internal.model.CreateRequestTenantMapDTO;
-import gen.io.github.onecx.tenant.rs.internal.model.RequestTenantMapDTO;
-import gen.io.github.onecx.tenant.rs.internal.model.RestExceptionDTO;
+import gen.io.github.onecx.tenant.rs.internal.model.CreateTenantRequestDTO;
+import gen.io.github.onecx.tenant.rs.internal.model.ProblemDetailResponseDTO;
+import gen.io.github.onecx.tenant.rs.internal.model.TenantSearchCriteriaDTO;
+import gen.io.github.onecx.tenant.rs.internal.model.UpdateTenantRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-@Path("/internal/tenant")
+@Path("/internal/tenants")
 @Transactional(value = NOT_SUPPORTED)
 public class TenantControllerInternal implements TenantInternalApi {
 
     @Inject
-    TenantMapDAO dao;
+    TenantDAO dao;
     @Inject
-    TenantMapMapper mapper;
+    TenantMapper mapper;
 
     @Context
     UriInfo uriInfo;
 
     @Override
     @Transactional
-    public Response getAllTenantMaps(Integer pageNumber, Integer pageSize) {
+    public Response updateTenant(String id, UpdateTenantRequestDTO dto) {
 
-        var tenantMaps = dao.createPageQuery(Page.of(pageNumber, pageSize))
-                .getPageResult()
-                .getStream()
-                .toList();
-
-        var responseTenantMapsDTO = mapper.response(tenantMaps);
-
-        return Response.ok(responseTenantMapsDTO).build();
-    }
-
-    @Override
-    @Transactional
-    public Response updateTenantMapById(String id, RequestTenantMapDTO requestTenantMapDTO) {
-
-        var tenantMap = dao.findById(id);
-        if (tenantMap == null) {
-            return Response.status(NOT_FOUND).entity(format("Could not find tenantMap with ID: %s", id)).build();
+        var item = dao.findById(id);
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        mapper.update(requestTenantMapDTO.getInputTenantMap(), tenantMap);
-        var updatedTenantMap = dao.update(tenantMap);
-        var responseTenantMapDTO = mapper.response(updatedTenantMap);
-
-        return Response.ok(responseTenantMapDTO).build();
+        mapper.update(dto, item);
+        item = dao.update(item);
+        return Response.ok(mapper.map(item)).build();
     }
 
     @Override
     @Transactional
-    public Response createTenantMap(CreateRequestTenantMapDTO requestTenantMapDTO) {
-
-        var tenantMap = mapper.create(requestTenantMapDTO.getInputTenantMap());
-        tenantMap = dao.create(tenantMap);
-
+    public Response createTenant(CreateTenantRequestDTO dto) {
+        var item = mapper.create(dto);
+        item = dao.create(item);
         return Response
-                .created(uriInfo.getAbsolutePathBuilder().path(tenantMap.getId()).build())
+                .created(uriInfo.getAbsolutePathBuilder().path(item.getId()).build())
+                .entity(mapper.map(item))
                 .build();
     }
 
     @Override
-    public Response getTenantMapById(String id) {
-        var tenantMap = dao.findById(id);
-        return Response.ok(mapper.map(tenantMap)).build();
+    public Response getTenant(String id) {
+        var item = dao.findById(id);
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(mapper.map(item)).build();
+    }
+
+    @Override
+    public Response searchTenants(TenantSearchCriteriaDTO tenantSearchCriteriaDTO) {
+        var criteria = mapper.map(tenantSearchCriteriaDTO);
+        var result = dao.findThemesByCriteria(criteria);
+        return Response.ok(mapper.mapPage(result)).build();
     }
 
     @ServerExceptionMapper
-    public RestResponse<RestExceptionDTO> exception(Exception ex) {
+    public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ex) {
         return mapper.exception(ex);
     }
 
     @ServerExceptionMapper
-    public RestResponse<RestExceptionDTO> constraint(ConstraintViolationException ex) {
+    public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return mapper.constraint(ex);
     }
 }
