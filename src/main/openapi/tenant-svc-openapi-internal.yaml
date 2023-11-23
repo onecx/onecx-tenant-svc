@@ -138,6 +138,9 @@ components:
         tenantId:
           type: string
           description: Id of the tenant
+        description:
+          type: string
+          description: Description of the tenant
     UpdateTenantRequest:
       type: object
       required:
@@ -146,6 +149,9 @@ components:
         orgId:
           type: string
           description: Id of the organization
+        description:
+          type: string
+          description: Description of the tenant
     TenantPageResult:
       type: object
       properties:
@@ -188,6 +194,9 @@ components:
         tenantId:
           type: string
           description: Id of the tenant
+        description:
+          type: string
+          description: Description of the tenant
     ProblemDetailResponse:
       type: object
       properties:

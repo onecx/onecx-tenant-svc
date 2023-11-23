@@ -21,4 +21,7 @@ public class Tenant extends TraceableEntity {
 
     @Column(name = "TENANT_ID")
     private String tenantId;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
 }
