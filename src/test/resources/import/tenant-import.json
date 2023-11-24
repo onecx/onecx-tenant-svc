@@ -1,0 +1,12 @@
+{
+  "tenants" : {
+    "tenant1": {
+      "orgId": "org1",
+      "description": "description1"
+    },
+    "tenant2": {
+      "orgId": "org2",
+      "description": "description2"
+    }
+  }
+}

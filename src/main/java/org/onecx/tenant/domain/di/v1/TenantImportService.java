@@ -17,7 +17,7 @@ import org.tkit.quarkus.dataimport.DataImportService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gen.io.github.onecx.tenant.di.v1.model.TenantImportDTOV1;
+import gen.io.github.onecx.tenant.di.v1.model.DataImportDTOV1;
 
 @DataImport("tenant")
 public class TenantImportService implements DataImportService {
@@ -37,7 +37,7 @@ public class TenantImportService implements DataImportService {
         try {
             String operation = config.getMetadata().getOrDefault("operation", "NONE");
 
-            Consumer<TenantImportDTOV1> action = null;
+            Consumer<DataImportDTOV1> action = null;
             if ("CLEAN_INSERT".equals(operation)) {
                 action = this::cleanInsert;
             }
@@ -52,8 +52,8 @@ public class TenantImportService implements DataImportService {
                 return;
             }
 
-            TenantImportDTOV1 data = mapper.readValue(config.getData(), TenantImportDTOV1.class);
-            if (data.isEmpty()) {
+            DataImportDTOV1 data = mapper.readValue(config.getData(), DataImportDTOV1.class);
+            if (data.getTenants() == null || data.getTenants().isEmpty()) {
                 log.warn("Import configuration key {} does not contains any JSON data to import", config.getKey());
                 return;
             }
@@ -66,21 +66,22 @@ public class TenantImportService implements DataImportService {
         }
     }
 
-    private void cleanInsert(TenantImportDTOV1 data) {
+    private void cleanInsert(DataImportDTOV1 data) {
 
-        List<Tenant> tmp = new ArrayList<>();
-        data.forEach((k, v) -> {
-            var t = new Tenant();
-            t.setOrgId(k);
-            t.setTenantId(v);
-            tmp.add(t);
+        List<Tenant> tenants = new ArrayList<>();
+        data.getTenants().forEach((tenantId, value) -> {
+            var tenant = new Tenant();
+            tenant.setTenantId(tenantId);
+            tenant.setOrgId(value.getOrgId());
+            tenant.setDescription(value.getDescription());
+            tenants.add(tenant);
         });
 
         // delete all mappings
         dao.deleteQueryAll();
 
         // create new mappings
-        dao.create(tmp);
+        dao.create(tenants);
     }
 
     public static class ErrorImportException extends RuntimeException {

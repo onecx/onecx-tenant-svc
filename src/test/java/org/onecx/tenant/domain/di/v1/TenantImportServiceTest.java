@@ -17,7 +17,8 @@ import org.tkit.quarkus.test.WithDBData;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gen.io.github.onecx.tenant.di.v1.model.TenantImportDTOV1;
+import gen.io.github.onecx.tenant.di.v1.model.DataImportDTOV1;
+import gen.io.github.onecx.tenant.di.v1.model.DataImportTenantDTOV1;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
@@ -59,10 +60,18 @@ class TenantImportServiceTest extends AbstractTest {
     @Test
     void importCleanInsertTest() {
 
-        TenantImportDTOV1 data = new TenantImportDTOV1();
-        data.put("A", "1");
-        data.put("B", "2");
-        data.put("C", "3");
+        DataImportDTOV1 data = new DataImportDTOV1();
+        var t1 = new DataImportTenantDTOV1();
+        t1.setOrgId("1");
+        data.putTenantsItem("A", t1);
+
+        var t2 = new DataImportTenantDTOV1();
+        t2.setOrgId("2");
+        data.putTenantsItem("B", t2);
+
+        var t3 = new DataImportTenantDTOV1();
+        t3.setOrgId("3");
+        data.putTenantsItem("C", t3);
 
         service.importData(new DataImportConfig() {
             @Override
@@ -116,7 +125,25 @@ class TenantImportServiceTest extends AbstractTest {
                 @Override
                 public byte[] getData() {
                     try {
-                        return mapper.writeValueAsBytes(Map.of());
+                        return mapper.writeValueAsBytes(new DataImportDTOV1());
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+
+            service.importData(new DataImportConfig() {
+                @Override
+                public Map<String, String> getMetadata() {
+                    return Map.of("operation", "CLEAN_INSERT");
+                }
+
+                @Override
+                public byte[] getData() {
+                    try {
+                        var data = new DataImportDTOV1();
+                        data.setTenants(null);
+                        return mapper.writeValueAsBytes(data);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
