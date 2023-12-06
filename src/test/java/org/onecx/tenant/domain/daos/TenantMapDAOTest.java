@@ -8,13 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mockito;
+import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class TenantMapDAOTest {
+class TenantMapDAOTest extends AbstractTest {
     @Inject
     TenantDAO dao;
 

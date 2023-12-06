@@ -6,7 +6,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -26,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @ApplicationScoped
-@Path("/internal/tenants")
 @Transactional(value = NOT_SUPPORTED)
 public class TenantControllerInternal implements TenantInternalApi {
 

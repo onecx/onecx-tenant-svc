@@ -1,6 +1,5 @@
 app:
   image:
     repository: "onecx/onecx-tenant-svc"
-    tag: 999-SNAPSHOT
   db:
     enabled: true

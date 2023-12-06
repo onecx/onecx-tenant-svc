@@ -5,25 +5,30 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import java.util.Map;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.Config;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.onecx.tenant.rs.external.TenantConfig;
 import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.io.github.onecx.tenant.v1.model.ProblemDetailResponseDTOV1;
 import gen.io.github.onecx.tenant.v1.model.TenantIdDTOV1;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.Mock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.QuarkusTestProfile;
-import io.quarkus.test.junit.TestProfile;
 import io.quarkus.test.keycloak.client.KeycloakTestClient;
+import io.smallrye.config.SmallRyeConfig;
 
 @QuarkusTest
 @TestHTTPEndpoint(TenantControllerV1.class)
-@TestProfile(TenantControllerV1NoDefaultTest.CustomProfile.class)
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
 class TenantControllerV1NoDefaultTest extends AbstractTest {
 
@@ -32,10 +37,39 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     private static String tokenWithNotExistingOrgId;
 
     private static String tokenWithoutOrgId;
+
     private static final KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
-    private static final String APM_HEADER_TOKEN = ConfigProvider.getConfig().getValue("onecx.tenant.header.token",
-            String.class);
+    @InjectMock
+    TenantConfig tenantConfig;
+
+    @Inject
+    Config config;
+
+    @BeforeEach
+    void beforeEach() {
+        var tmp = config.unwrap(SmallRyeConfig.class).getConfigMapping(TenantConfig.class);
+        Mockito.when(tenantConfig.defaultTenantEnabled()).thenReturn(false);
+        Mockito.when(tenantConfig.headerToken()).thenReturn(tmp.headerToken());
+        Mockito.when(tenantConfig.tokenVerified()).thenReturn(tmp.tokenVerified());
+        Mockito.when(tenantConfig.tokenPublicKeyLocationSuffix()).thenReturn(tmp.tokenPublicKeyLocationSuffix());
+        Mockito.when(tenantConfig.tokenPublicKeyEnabled()).thenReturn(tmp.tokenPublicKeyEnabled());
+        Mockito.when(tenantConfig.tokenOrgClaim()).thenReturn(tmp.tokenOrgClaim());
+        Mockito.when(tenantConfig.defaultTenantId()).thenReturn(tmp.defaultTenantId());
+    }
+
+    public static class ConfigProducer {
+
+        @Inject
+        Config config;
+
+        @Produces
+        @ApplicationScoped
+        @Mock
+        TenantConfig config() {
+            return config.unwrap(SmallRyeConfig.class).getConfigMapping(TenantConfig.class);
+        }
+    }
 
     @BeforeAll
     static void setUp() {
@@ -47,7 +81,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnNotFound_whenTenantWithOrgIdDoesNotExist() {
 
-        var dto = given().header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
+        given().header(tenantConfig.headerToken(), tokenWithNotExistingOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -59,7 +93,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void skipTokenVerified() {
 
         var dto = given()
-                .header(APM_HEADER_TOKEN, tokenWithoutOrgId)
+                .header(tenantConfig.headerToken(), tokenWithoutOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -76,7 +110,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void getTenantMapsByOrgId_shouldReturnTenantId() {
 
         var dto = given()
-                .header(APM_HEADER_TOKEN, token)
+                .header(tenantConfig.headerToken(), token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -88,16 +122,4 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
         assertThat(dto.getTenantId()).isNotNull().isEqualTo("10");
     }
 
-    public static class CustomProfile implements QuarkusTestProfile {
-
-        @Override
-        public String getConfigProfile() {
-            return "test";
-        }
-
-        @Override
-        public Map<String, String> getConfigOverrides() {
-            return Map.of("onecx.tenant.default.enabled", "false");
-        }
-    }
 }
