@@ -5,11 +5,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import jakarta.inject.Inject;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.onecx.tenant.rs.external.TenantConfig;
 import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
@@ -28,9 +25,6 @@ class TenantControllerV1Test extends AbstractTest {
     private static String tokenWithoutOrgId;
     private static final KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
-    @Inject
-    TenantConfig tenantConfig;
-
     @BeforeAll
     static void setUp() {
         token = keycloakClient.getAccessToken("user_with_orgId_1234");
@@ -42,7 +36,7 @@ class TenantControllerV1Test extends AbstractTest {
     void getTenantMapsByOrgId_shouldReturnTenantId() {
 
         var dto = given()
-                .header(tenantConfig.headerToken(), token)
+                .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -57,7 +51,7 @@ class TenantControllerV1Test extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnNotFound_whenTenantWithOrgIdDoesNotExist() {
 
-        var dto = given().header(tenantConfig.headerToken(), tokenWithNotExistingOrgId)
+        var dto = given().header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -66,7 +60,7 @@ class TenantControllerV1Test extends AbstractTest {
                 .extract().as(TenantIdDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getTenantId()).isNotNull().isEqualTo(tenantConfig.defaultTenantId());
+        assertThat(dto.getTenantId()).isNotNull().isEqualTo(DEFAULT_ID);
     }
 
     @Test
@@ -79,14 +73,14 @@ class TenantControllerV1Test extends AbstractTest {
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
 
-        given().header(tenantConfig.headerToken(), "")
+        given().header(APM_HEADER_TOKEN, "")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
 
-        given().header(tenantConfig.headerToken(), "this_is_not_token")
+        given().header(APM_HEADER_TOKEN, "this_is_not_token")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -97,7 +91,7 @@ class TenantControllerV1Test extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnBadRequest_whenTokenUserHasNoOrgId() {
 
-        var dto = given().header(tenantConfig.headerToken(), tokenWithoutOrgId)
+        var dto = given().header(APM_HEADER_TOKEN, tokenWithoutOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -106,6 +100,6 @@ class TenantControllerV1Test extends AbstractTest {
                 .extract().as(TenantIdDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getTenantId()).isNotNull().isEqualTo(tenantConfig.defaultTenantId());
+        assertThat(dto.getTenantId()).isNotNull().isEqualTo(DEFAULT_ID);
     }
 }
