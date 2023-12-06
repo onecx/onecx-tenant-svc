@@ -5,7 +5,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.onecx.tenant.test.AbstractTest;
@@ -25,12 +24,6 @@ class TenantControllerV1Test extends AbstractTest {
     private static String tokenWithNotExistingOrgId;
     private static String tokenWithoutOrgId;
     private static final KeycloakTestClient keycloakClient = new KeycloakTestClient();
-
-    private static final String APM_HEADER_TOKEN = ConfigProvider.getConfig().getValue("onecx.tenant.header.token",
-            String.class);
-
-    private static final String DEFAULT_ID = ConfigProvider.getConfig().getValue("onecx.tenant.default.tenant-id",
-            String.class);
 
     @BeforeAll
     static void setUp() {

@@ -9,12 +9,10 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -22,6 +20,7 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwx.JsonWebStructure;
 import org.jose4j.lang.JoseException;
 import org.onecx.tenant.domain.daos.TenantDAO;
+import org.onecx.tenant.rs.external.TenantConfig;
 import org.onecx.tenant.rs.external.v1.mappers.TenantMapperV1;
 
 import gen.io.github.onecx.tenant.v1.TenantV1Api;
@@ -33,32 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ApplicationScoped
 @Transactional(value = NOT_SUPPORTED)
-@Path("/v1/tenant")
 public class TenantControllerV1 implements TenantV1Api {
 
     @Inject
     TenantDAO dao;
 
-    @ConfigProperty(name = "onecx.tenant.token.claim.org-id")
-    String orgClaim;
-
-    @ConfigProperty(name = "onecx.tenant.token.verified")
-    boolean verified;
-
-    @ConfigProperty(name = "onecx.tenant.token.issuer.public-key-location.suffix")
-    String issuerPublicKeyLocationSuffix;
-
-    @ConfigProperty(name = "onecx.tenant.token.issuer.public-key-location.enabled")
-    boolean issuerEnabled;
-
-    @ConfigProperty(name = "onecx.tenant.header.token")
-    String headerParam;
-
-    @ConfigProperty(name = "onecx.tenant.default.enabled")
-    boolean defaultTenantEnabled;
-
-    @ConfigProperty(name = "onecx.tenant.default.tenant-id")
-    String defaultTenantValue;
+    @Inject
+    TenantConfig config;
 
     @Context
     HttpHeaders headers;
@@ -76,12 +56,12 @@ public class TenantControllerV1 implements TenantV1Api {
     public Response getTenantMapsByOrgId() {
 
         // read token from header
-        var apmPrincipalToken = headers.getHeaderString(headerParam);
+        var apmPrincipalToken = headers.getHeaderString(config.headerToken());
         if (apmPrincipalToken == null || apmPrincipalToken.isBlank()) {
-            log.error("Missing APM principal token: " + headerParam);
+            log.error("Missing APM principal token: " + config.headerToken());
             return Response.status(BAD_REQUEST)
                     .entity(mapper.exception(ErrorKeys.ERROR_MISSING_APM_PRINCIPAL_TOKEN,
-                            "Missing APM principal token: " + headerParam))
+                            "Missing APM principal token: " + config.headerToken()))
                     .build();
         }
 
@@ -99,13 +79,13 @@ public class TenantControllerV1 implements TenantV1Api {
 
         // validate organization
         if (organizationId == null) {
-            if (defaultTenantEnabled) {
-                return Response.ok(mapper.create(defaultTenantValue)).build();
+            if (config.defaultTenantEnabled()) {
+                return Response.ok(mapper.create(config.defaultTenantId())).build();
             }
-            log.error("Could not find organization field '{}' in the ID token", orgClaim);
+            log.error("Could not find organization field '{}' in the ID token", config.tokenOrgClaim());
             return Response.status(BAD_REQUEST)
                     .entity(mapper.exception(ErrorKeys.ERROR_NO_ORGANIZATION_ID_IN_TOKEN,
-                            "Could not find organization field '" + orgClaim + "' in the ID token"))
+                            "Could not find organization field '" + config.tokenOrgClaim() + "' in the ID token"))
                     .build();
         }
 
@@ -116,8 +96,8 @@ public class TenantControllerV1 implements TenantV1Api {
         }
 
         // check if default tenant is enabled
-        if (defaultTenantEnabled) {
-            return Response.ok(mapper.create(defaultTenantValue)).build();
+        if (config.defaultTenantEnabled()) {
+            return Response.ok(mapper.create(config.defaultTenantId())).build();
         }
 
         return Response.status(NOT_FOUND).build();
@@ -127,24 +107,24 @@ public class TenantControllerV1 implements TenantV1Api {
             throws JoseException, InvalidJwtException, MalformedClaimException, ParseException {
         Optional<String> organizationClaim;
 
-        if (verified) {
+        if (config.tokenVerified()) {
             var info = authContextInfo;
 
             // get public key location from issuer URL
-            if (issuerEnabled) {
+            if (config.tokenPublicKeyEnabled()) {
                 var jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
                 var jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
-                var publicKeyLocation = jwtClaims.getIssuer() + issuerPublicKeyLocationSuffix;
+                var publicKeyLocation = jwtClaims.getIssuer() + config.tokenPublicKeyLocationSuffix();
                 info = new JWTAuthContextInfo(authContextInfo);
                 info.setPublicKeyLocation(publicKeyLocation);
             }
 
             var token = parser.parse(apmPrincipalToken, info);
-            organizationClaim = token.claim(orgClaim);
+            organizationClaim = token.claim(config.tokenOrgClaim());
         } else {
             var jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
             var jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
-            organizationClaim = Optional.of(jwtClaims.getClaimValueAsString(orgClaim));
+            organizationClaim = Optional.of(jwtClaims.getClaimValueAsString(config.tokenOrgClaim()));
         }
 
         return organizationClaim.orElse(null);
