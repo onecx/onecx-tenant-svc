@@ -5,6 +5,7 @@ appVersion: 0.0.0
 description: Onecx tenant service
 keywords:
   - tenant
+  - multi-tenancy
 sources:
   - https://github.com/onecx/onecx-tenant-svc
 maintainers:
