@@ -2,7 +2,7 @@ apiVersion: v2
 name: onecx-tenant-svc
 version: 0.0.0
 appVersion: 0.0.0
-description: Onecx tenant service
+description: OneCX Tenant Service
 keywords:
   - tenant
   - multi-tenancy

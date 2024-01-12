@@ -11,7 +11,7 @@ paths:
   /internal/tenants/search:
       post:
         tags:
-          - TenantInternal
+          - tenantInternal
         summary: Search tenants by criteria
         operationId: searchTenants
         requestBody:
