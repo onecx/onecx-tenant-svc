@@ -27,6 +27,12 @@ paths:
               "application/json":
                 schema:
                   $ref: "#/components/schemas/TenantPageResult"
+          "400":
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/tenants:
       post:
         tags:

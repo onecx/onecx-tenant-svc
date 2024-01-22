@@ -9,24 +9,16 @@ import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.MalformedClaimException;
-import org.jose4j.jwt.consumer.InvalidJwtException;
-import org.jose4j.jwx.JsonWebStructure;
-import org.jose4j.lang.JoseException;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.onecx.tenant.domain.daos.TenantDAO;
 import org.onecx.tenant.rs.external.TenantConfig;
 import org.onecx.tenant.rs.external.v1.mappers.TenantMapperV1;
+import org.tkit.quarkus.context.ApplicationContext;
+import org.tkit.quarkus.rs.context.token.TokenException;
 
 import gen.io.github.onecx.tenant.v1.TenantV1Api;
-import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
-import io.smallrye.jwt.auth.principal.JWTParser;
-import io.smallrye.jwt.auth.principal.ParseException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -40,42 +32,27 @@ public class TenantControllerV1 implements TenantV1Api {
     @Inject
     TenantConfig config;
 
-    @Context
-    HttpHeaders headers;
-
-    @Inject
-    JWTParser parser;
-
-    @Inject
-    JWTAuthContextInfo authContextInfo;
-
     @Inject
     TenantMapperV1 mapper;
 
     @Override
     public Response getTenantMapsByOrgId() {
 
-        // read token from header
-        var apmPrincipalToken = headers.getHeaderString(config.headerToken());
-        if (apmPrincipalToken == null || apmPrincipalToken.isBlank()) {
-            log.error("Missing APM principal token: " + config.headerToken());
+        var context = ApplicationContext.get();
+        var principalToken = context.getPrincipalToken();
+
+        // check principal token
+        if (principalToken == null) {
+            log.error("Missing principal token.");
             return Response.status(BAD_REQUEST)
-                    .entity(mapper.exception(ErrorKeys.ERROR_MISSING_APM_PRINCIPAL_TOKEN,
-                            "Missing APM principal token: " + config.headerToken()))
+                    .entity(mapper.exception(ErrorKeys.ERROR_MISSING_PRINCIPAL_TOKEN,
+                            "Missing APM principal token."))
                     .build();
         }
 
         // read organization from token
-        String organizationId;
-        try {
-            organizationId = getOrganization(apmPrincipalToken);
-        } catch (Exception e) {
-            log.error("Failed to verify a token. Error: {}", e.getMessage());
-            return Response.status(BAD_REQUEST)
-                    .entity(mapper.exception(ErrorKeys.ERROR_VERIFY_APM_TOKEN,
-                            "Failed to verify a token. Error: " + e.getMessage()))
-                    .build();
-        }
+        Optional<String> organizationClaim = principalToken.claim(config.tokenOrgClaim());
+        var organizationId = organizationClaim.orElse(null);
 
         // validate organization
         if (organizationId == null) {
@@ -103,39 +80,17 @@ public class TenantControllerV1 implements TenantV1Api {
         return Response.status(NOT_FOUND).build();
     }
 
-    private String getOrganization(String apmPrincipalToken)
-            throws JoseException, InvalidJwtException, MalformedClaimException, ParseException {
-        Optional<String> organizationClaim;
-
-        if (config.tokenVerified()) {
-            var info = authContextInfo;
-
-            // get public key location from issuer URL
-            if (config.tokenPublicKeyEnabled()) {
-                var jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
-                var jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
-                var publicKeyLocation = jwtClaims.getIssuer() + config.tokenPublicKeyLocationSuffix();
-                info = new JWTAuthContextInfo(authContextInfo);
-                info.setPublicKeyLocation(publicKeyLocation);
-            }
-
-            var token = parser.parse(apmPrincipalToken, info);
-            organizationClaim = token.claim(config.tokenOrgClaim());
-        } else {
-            var jws = (JsonWebSignature) JsonWebStructure.fromCompactSerialization(apmPrincipalToken);
-            var jwtClaims = JwtClaims.parse(jws.getUnverifiedPayload());
-            organizationClaim = Optional.of(jwtClaims.getClaimValueAsString(config.tokenOrgClaim()));
-        }
-
-        return organizationClaim.orElse(null);
-
+    @ServerExceptionMapper
+    public Response tokenException(TokenException e) {
+        return Response.status(BAD_REQUEST)
+                .entity(mapper.exception(e.getKey(), e.getMessage()))
+                .build();
     }
 
     public enum ErrorKeys {
 
         ERROR_NO_ORGANIZATION_ID_IN_TOKEN,
 
-        ERROR_MISSING_APM_PRINCIPAL_TOKEN,
-        ERROR_VERIFY_APM_TOKEN;
+        ERROR_MISSING_PRINCIPAL_TOKEN;
     }
 }
