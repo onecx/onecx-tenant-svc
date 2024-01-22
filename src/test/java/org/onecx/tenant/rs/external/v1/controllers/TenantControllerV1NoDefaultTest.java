@@ -5,8 +5,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
@@ -21,7 +19,6 @@ import org.tkit.quarkus.test.WithDBData;
 import gen.io.github.onecx.tenant.v1.model.ProblemDetailResponseDTOV1;
 import gen.io.github.onecx.tenant.v1.model.TenantIdDTOV1;
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.Mock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.keycloak.client.KeycloakTestClient;
@@ -50,25 +47,8 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void beforeEach() {
         var tmp = config.unwrap(SmallRyeConfig.class).getConfigMapping(TenantConfig.class);
         Mockito.when(tenantConfig.defaultTenantEnabled()).thenReturn(false);
-        Mockito.when(tenantConfig.headerToken()).thenReturn(tmp.headerToken());
-        Mockito.when(tenantConfig.tokenVerified()).thenReturn(tmp.tokenVerified());
-        Mockito.when(tenantConfig.tokenPublicKeyLocationSuffix()).thenReturn(tmp.tokenPublicKeyLocationSuffix());
-        Mockito.when(tenantConfig.tokenPublicKeyEnabled()).thenReturn(tmp.tokenPublicKeyEnabled());
         Mockito.when(tenantConfig.tokenOrgClaim()).thenReturn(tmp.tokenOrgClaim());
         Mockito.when(tenantConfig.defaultTenantId()).thenReturn(tmp.defaultTenantId());
-    }
-
-    public static class ConfigProducer {
-
-        @Inject
-        Config config;
-
-        @Produces
-        @ApplicationScoped
-        @Mock
-        TenantConfig config() {
-            return config.unwrap(SmallRyeConfig.class).getConfigMapping(TenantConfig.class);
-        }
     }
 
     @BeforeAll
@@ -81,7 +61,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnNotFound_whenTenantWithOrgIdDoesNotExist() {
 
-        given().header(tenantConfig.headerToken(), tokenWithNotExistingOrgId)
+        given().header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -93,7 +73,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void skipTokenVerified() {
 
         var dto = given()
-                .header(tenantConfig.headerToken(), tokenWithoutOrgId)
+                .header(APM_HEADER_TOKEN, tokenWithoutOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -110,7 +90,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void getTenantMapsByOrgId_shouldReturnTenantId() {
 
         var dto = given()
-                .header(tenantConfig.headerToken(), token)
+                .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()

@@ -4,13 +4,10 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
-import jakarta.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.onecx.tenant.domain.daos.TenantDAO;
-import org.onecx.tenant.rs.external.TenantConfig;
 import org.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 
@@ -28,9 +25,6 @@ class TenantControllerV1ExceptionTest extends AbstractTest {
 
     private static final KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
-    @Inject
-    TenantConfig tenantConfig;
-
     @BeforeEach
     void beforeAll() {
         Mockito.when(dao.findTenantIdByOrgId("1234"))
@@ -43,14 +37,14 @@ class TenantControllerV1ExceptionTest extends AbstractTest {
         String token = keycloakClient.getAccessToken("user_with_orgId_1234");
 
         given()
-                .header(tenantConfig.headerToken(), token)
+                .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
                 .then().statusCode(INTERNAL_SERVER_ERROR.getStatusCode());
 
         given()
-                .header(tenantConfig.headerToken(), token)
+                .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()

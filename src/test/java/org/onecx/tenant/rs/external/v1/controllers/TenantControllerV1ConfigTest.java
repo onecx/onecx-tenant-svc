@@ -34,7 +34,7 @@ class TenantControllerV1ConfigTest extends AbstractTest {
         var token = keycloakClient.getAccessToken("user_with_orgId_1234");
 
         var dto = given()
-                .header(tenantConfig.headerToken(), token)
+                .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -56,10 +56,6 @@ class TenantControllerV1ConfigTest extends AbstractTest {
     void beforeEach() {
         var tmp = config.unwrap(SmallRyeConfig.class).getConfigMapping(TenantConfig.class);
         Mockito.when(tenantConfig.defaultTenantEnabled()).thenReturn(tmp.defaultTenantEnabled());
-        Mockito.when(tenantConfig.headerToken()).thenReturn(tmp.headerToken());
-        Mockito.when(tenantConfig.tokenVerified()).thenReturn(false);
-        Mockito.when(tenantConfig.tokenPublicKeyLocationSuffix()).thenReturn(tmp.tokenPublicKeyLocationSuffix());
-        Mockito.when(tenantConfig.tokenPublicKeyEnabled()).thenReturn(tmp.tokenPublicKeyEnabled());
         Mockito.when(tenantConfig.tokenOrgClaim()).thenReturn(tmp.tokenOrgClaim());
         Mockito.when(tenantConfig.defaultTenantId()).thenReturn(tmp.defaultTenantId());
     }
