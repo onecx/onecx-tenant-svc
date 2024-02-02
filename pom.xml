@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.onecx</groupId>
+        <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.26.0</version>
+        <version>0.31.0</version>
     </parent>
 
     <artifactId>onecx-tenant-svc</artifactId>
@@ -178,8 +178,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/tenant-svc-openapi-internal.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.tenant.rs.internal</apiPackage>
-                            <modelPackage>gen.io.github.onecx.tenant.rs.internal.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.tenant.rs.internal</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.tenant.rs.internal.model</modelPackage>
                         </configuration>
                     </execution>
                     <execution>
@@ -189,8 +189,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/tenant-svc-openapi-v1.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.tenant.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.tenant.v1.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.tenant.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.tenant.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <skipValidateSpec>true</skipValidateSpec>
                         </configuration>
@@ -202,8 +202,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/tenant-svc-openapi-di-v1.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.tenant.di.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.tenant.di.v1.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.tenant.di.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.tenant.di.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <skipValidateSpec>true</skipValidateSpec>
                             <generateApis>false</generateApis>
