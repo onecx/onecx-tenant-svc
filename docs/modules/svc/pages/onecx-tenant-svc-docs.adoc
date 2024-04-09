@@ -1,0 +1,23 @@
+=== Versions
+
+include::onecx-tenant-svc-version.adoc[opts=optional]
+
+=== Default properties
+
+.src/main/resources/application.properties
+[%collapsible%open]
+====
+include::onecx-tenant-svc-properties.adoc[opts=optional]
+====
+
+=== Extensions
+
+include::onecx-tenant-svc-extensions.adoc[opts=optional]
+
+=== Container
+
+include::onecx-tenant-svc-docker.adoc[opts=optional]
+
+=== Helm
+
+include::onecx-tenant-svc-helm.adoc[opts=optional]

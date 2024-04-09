@@ -1,0 +1,20 @@
+
+
+.last build version
+[source,shell,subs=attributes+]
+----
+helm install onecx-tenant-svc oci://ghcr.io/onecx/charts/onecx-tenant-svc -- version 0.0.0-rc.32
+----
+
+Default values
+
+.values.yaml
+[source,yaml]
+----
+app:
+  name: svc
+  image:
+    repository: "onecx/onecx-tenant-svc"
+  db:
+    enabled: true
+----

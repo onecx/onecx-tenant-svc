@@ -1,0 +1,7 @@
+
+
+.last build version
+[source,shell,subs=attributes+]
+----
+docker pull ghcr.io/onecx/onecx-tenant-svc:0.0.0-rc.32
+----
