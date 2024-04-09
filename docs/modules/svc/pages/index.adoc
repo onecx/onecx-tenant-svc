@@ -1,0 +1,6 @@
+== Onecx Tenant Backend Service
+
+include::docs.adoc[opts=optional]
+
+
+include::onecx-tenant-svc-docs.adoc[opts=optional]

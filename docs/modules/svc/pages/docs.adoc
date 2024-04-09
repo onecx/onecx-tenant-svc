@@ -1,0 +1,3 @@
+
+This backend service takes an `Identity token` of the user, reads the organization `ID` from the token and returns the corresponding `tenant ID`.
+
