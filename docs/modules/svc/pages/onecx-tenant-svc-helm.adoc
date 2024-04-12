@@ -1,9 +1,11 @@
 
+include::onecx-tenant-svc-attributes.adoc[opts=optional]
+
 
 .last build version
 [source,shell,subs=attributes+]
 ----
-helm install onecx-tenant-svc oci://ghcr.io/onecx/charts/onecx-tenant-svc -- version 0.0.0-rc.36
+helm install onecx-tenant-svc oci://ghcr.io/onecx/charts/onecx-tenant-svc -- version {project-rc-version}
 ----
 
 Default values

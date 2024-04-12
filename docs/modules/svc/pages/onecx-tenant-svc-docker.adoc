@@ -1,7 +1,15 @@
 
+include::onecx-tenant-svc-attributes.adoc[opts=optional]
+
 
 .last build version
 [source,shell,subs=attributes+]
 ----
-docker pull ghcr.io/onecx/onecx-tenant-svc:0.0.0-rc.36
+docker pull ghcr.io/onecx/onecx-tenant-svc:{project-rc-version}
+----
+
+.last build version
+[source,shell,subs=attributes+]
+----
+docker pull ghcr.io/onecx/onecx-tenant-svc:{project-rc-version}
 ----

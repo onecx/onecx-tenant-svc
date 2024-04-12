@@ -1,9 +1,12 @@
+
+include::onecx-tenant-svc-attributes.adoc[opts=optional]
+
 [.extension.table.searchable, cols="50,.^50"]
 |===
 h| Last release version
 h| Last release candidate
 
-| 
-| 0.0.0-rc.36
+| {project-version}
+| {project-rc-version}
 
 |===
