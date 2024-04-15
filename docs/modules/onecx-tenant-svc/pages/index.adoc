@@ -1,0 +1,10 @@
+include::onecx-tenant-svc-attributes.adoc[opts=optional]
+
+== onecx-tenant-svc
+
+include::docs.adoc[opts=optional]
+
+=== Configuration
+include::onecx-tenant-svc.adoc[opts=optional]
+
+include::onecx-tenant-svc-docs.adoc[opts=optional]
