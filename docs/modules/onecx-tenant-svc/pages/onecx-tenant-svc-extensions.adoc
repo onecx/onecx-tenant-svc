@@ -1,4 +1,6 @@
 
+include::onecx-tenant-svc-attributes.adoc[opts=optional]
+
 [.extension.table.searchable, cols="50,.^15,.^15,.^20"]
 |===
 h| Extensions
@@ -136,11 +138,6 @@ h| Version
 
 | https://quarkus.io/guides/container-image[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-container-image-docker.adoc[Link]
-| 3.9.3
-
-
-
-|===us-container-image-docker.adoc[Link]
 | 3.9.3
 
 

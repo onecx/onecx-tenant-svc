@@ -7,12 +7,11 @@
     <parent>
         <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.42.0</version>
+        <version>0.45.0</version>
     </parent>
 
     <artifactId>onecx-tenant-svc</artifactId>
     <version>999-SNAPSHOT</version>
-    <name>Onecx Tenant Backend Service</name>
 
     <dependencies>
         <!-- 1000kit -->

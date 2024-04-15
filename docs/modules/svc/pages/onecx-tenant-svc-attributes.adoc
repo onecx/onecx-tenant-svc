@@ -1,2 +1,0 @@
-:project-rc-version: 0.0.0-rc.38
-:project-version: 
