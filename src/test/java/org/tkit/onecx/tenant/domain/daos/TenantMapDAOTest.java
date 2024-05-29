@@ -29,6 +29,8 @@ class TenantMapDAOTest extends AbstractTest {
 
     @Test
     void findTenantIdByOrgIdExceptionTest() {
+        methodExceptionTests(() -> dao.filterExistingTenants(null),
+                TenantDAO.ErrorKeys.ERROR_FILTER_EXISTING_TENANTS);
         methodExceptionTests(() -> dao.findThemesByCriteria(null),
                 TenantDAO.ErrorKeys.ERROR_FIND_TENANT_BY_CRITERIA);
         methodExceptionTests(() -> dao.findTenantIdByOrgId(null),

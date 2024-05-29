@@ -46,6 +46,7 @@ public abstract class TenantMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     public abstract Tenant create(CreateTenantRequestDTO dto);
 
     @Mapping(target = "id", ignore = true)
@@ -57,6 +58,7 @@ public abstract class TenantMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     public abstract void update(UpdateTenantRequestDTO tenantMapDTO, @MappingTarget Tenant tenantMap);
 
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {

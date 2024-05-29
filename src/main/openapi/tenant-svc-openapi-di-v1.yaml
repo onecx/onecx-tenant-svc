@@ -31,9 +31,10 @@ components:
         $ref: '#/components/schemas/DataImportTenant'
     DataImportTenant:
       type: object
+      required:
+        - orgId
       properties:
         orgId:
-          required: true
           type: string
         description:
           type: string
