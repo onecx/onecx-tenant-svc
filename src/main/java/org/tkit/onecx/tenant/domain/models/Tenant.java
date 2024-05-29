@@ -24,4 +24,10 @@ public class Tenant extends TraceableEntity {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    /**
+     * Flag to identify created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
 }

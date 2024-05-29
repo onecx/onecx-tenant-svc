@@ -183,6 +183,18 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>exim-v1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-tenant-exim-v1-openapi.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.tenant.exim.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.tenant.exim.v1.model</modelPackage>
+                            <modelNameSuffix>DTOV1</modelNameSuffix>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>v1</id>
                         <goals>
                             <goal>generate</goal>
@@ -192,7 +204,6 @@
                             <apiPackage>gen.org.tkit.onecx.tenant.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.tenant.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
-                            <skipValidateSpec>true</skipValidateSpec>
                         </configuration>
                     </execution>
                     <execution>
@@ -205,7 +216,6 @@
                             <apiPackage>gen.org.tkit.onecx.tenant.di.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.tenant.di.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
-                            <skipValidateSpec>true</skipValidateSpec>
                             <generateApis>false</generateApis>
                         </configuration>
                     </execution>

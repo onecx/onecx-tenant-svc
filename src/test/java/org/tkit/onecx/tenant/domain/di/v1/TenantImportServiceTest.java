@@ -3,7 +3,6 @@ package org.tkit.onecx.tenant.domain.di.v1;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 
@@ -46,13 +45,13 @@ class TenantImportServiceTest extends AbstractTest {
         };
         service.importData(config);
 
-        List<Tenant> data = dao.findAll().collect(Collectors.toList());
+        List<Tenant> data = dao.findAll().toList();
         Assertions.assertNotNull(data);
         Assertions.assertEquals(2, data.size());
 
         config.getMetadata().put("operation", "NONE");
 
-        data = dao.findAll().collect(Collectors.toList());
+        data = dao.findAll().toList();
         Assertions.assertNotNull(data);
         Assertions.assertEquals(2, data.size());
     }
@@ -89,7 +88,7 @@ class TenantImportServiceTest extends AbstractTest {
             }
         });
 
-        List<Tenant> params = dao.findAll().collect(Collectors.toList());
+        List<Tenant> params = dao.findAll().toList();
         Assertions.assertNotNull(params);
         Assertions.assertEquals(3, params.size());
     }

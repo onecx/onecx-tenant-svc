@@ -1,5 +1,7 @@
 package org.tkit.onecx.tenant.domain.daos;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -54,8 +56,23 @@ public class TenantDAO extends AbstractDAO<Tenant> {
         }
     }
 
+    public List<String> filterExistingTenants(Collection<String> tenantIds) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(String.class);
+            var root = cq.from(Tenant.class);
+            cq.select(root.get(Tenant_.tenantId));
+            cq.where(root.get(Tenant_.tenantId).in(tenantIds));
+            return this.getEntityManager().createQuery(cq).getResultList();
+
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FILTER_EXISTING_TENANTS, ex);
+        }
+    }
+
     public enum ErrorKeys {
 
+        ERROR_FILTER_EXISTING_TENANTS,
         ERROR_FIND_TENANT_BY_CRITERIA,
         ERROR_FIND_TENANT_ID_BY_ORG_ID;
     }

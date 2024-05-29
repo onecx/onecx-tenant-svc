@@ -5,6 +5,6 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
         <include relativeToChangelogFile="true" file="v1/2023-11-17-createTables.xml"/>
-
         <include relativeToChangelogFile="true" file="v1/2023-11-17-data-import.xml"/>
+        <include relativeToChangelogFile="true" file="v1/2024-05-28-tenant-operator.xml"/>
 </databaseChangeLog>
