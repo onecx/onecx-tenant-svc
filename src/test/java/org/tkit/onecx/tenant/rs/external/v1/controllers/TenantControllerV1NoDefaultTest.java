@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import jakarta.inject.Inject;
 
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.tkit.onecx.tenant.rs.external.TenantConfig;
 import org.tkit.onecx.tenant.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.tenant.v1.model.ProblemDetailResponseDTOV1;
@@ -27,6 +29,7 @@ import io.smallrye.config.SmallRyeConfig;
 @QuarkusTest
 @TestHTTPEndpoint(TenantControllerV1.class)
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-tn:read" })
 class TenantControllerV1NoDefaultTest extends AbstractTest {
 
     private static String token;
@@ -61,7 +64,8 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnNotFound_whenTenantWithOrgIdDoesNotExist() {
 
-        given().header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -73,6 +77,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void skipTokenVerified() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .header(APM_HEADER_TOKEN, tokenWithoutOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -90,6 +95,7 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void getTenantMapsByOrgId_shouldReturnTenantId() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)

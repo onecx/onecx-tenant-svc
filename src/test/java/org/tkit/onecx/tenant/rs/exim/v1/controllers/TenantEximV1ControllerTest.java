@@ -4,12 +4,14 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jboss.resteasy.reactive.RestResponse.Status.*;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.tenant.rs.exim.v1.mappers.EximExceptionMapperV1;
 import org.tkit.onecx.tenant.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.tenant.exim.v1.model.EximProblemDetailResponseDTOV1;
@@ -21,6 +23,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(TenantEximV1Controller.class)
 @WithDBData(value = { "testdata/tenant-exim-v1.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-tn:write" })
 class TenantEximV1ControllerTest extends AbstractTest {
 
     @Test
@@ -29,6 +32,7 @@ class TenantEximV1ControllerTest extends AbstractTest {
                 .putTenantsItem("test1", null);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -37,6 +41,7 @@ class TenantEximV1ControllerTest extends AbstractTest {
 
         request.setTenants(null);
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -45,6 +50,7 @@ class TenantEximV1ControllerTest extends AbstractTest {
 
         request.setTenants(Map.of());
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -58,6 +64,7 @@ class TenantEximV1ControllerTest extends AbstractTest {
                 .putTenantsItem("new_tenant_id", new EximTenantDTOV1().description("description").orgId("o1"));
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -73,6 +80,7 @@ class TenantEximV1ControllerTest extends AbstractTest {
                 .putTenantsItem("new_tenant_id", new EximTenantDTOV1().description("description").orgId("o2"));
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post()
@@ -84,6 +92,7 @@ class TenantEximV1ControllerTest extends AbstractTest {
     void operatorImportEmptyBodyTest() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .post()
                 .then()

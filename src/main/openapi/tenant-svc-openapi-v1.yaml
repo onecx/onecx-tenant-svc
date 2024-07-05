@@ -10,6 +10,8 @@ tags:
 paths:
   /v1/tenant:
       get:
+        security:
+          - oauth2: [ ocx-tn:read ]
         tags:
           - TenantV1
         summary: Get tenant
@@ -30,6 +32,14 @@ paths:
           "404":
             description: Not found
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-tn:read: Grants read access
   schemas:
     TenantId:
       required:
