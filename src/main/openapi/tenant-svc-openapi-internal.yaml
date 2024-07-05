@@ -10,6 +10,8 @@ tags:
 paths:
   /internal/tenants/search:
       post:
+        security:
+          - oauth2: [ ocx-tn:all, ocx-tn:read ]
         tags:
           - tenantInternal
         summary: Search tenants by criteria
@@ -35,6 +37,8 @@ paths:
                   $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/tenants:
       post:
+        security:
+          - oauth2: [ ocx-tn:all, ocx-tn:write ]
         tags:
           - tenantInternal
         summary: Create new tenant
@@ -64,6 +68,8 @@ paths:
             description: Not found
   /internal/tenants/{id}:
       get:
+        security:
+          - oauth2: [ ocx-tn:all, ocx-tn:read ]
         tags:
           - tenantInternal
         summary: Get Tenant map by GUID
@@ -84,6 +90,8 @@ paths:
           "404":
             description: Not found
       put:
+        security:
+          - oauth2: [ ocx-tn:all, ocx-tn:write ]
         tags:
           - tenantInternal
         summary: Update tenant
@@ -115,6 +123,16 @@ paths:
           "404":
             description: Not found
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-tn:all: Grants access to all operations
+            ocx-tn:read: Grants read access
+            ocx-tn:write: Grants write access
   schemas:
     TenantSearchCriteria:
       type: object

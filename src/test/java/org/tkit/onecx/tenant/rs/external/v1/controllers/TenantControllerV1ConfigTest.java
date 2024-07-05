@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import jakarta.inject.Inject;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.tkit.onecx.tenant.rs.external.TenantConfig;
 import org.tkit.onecx.tenant.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.tenant.v1.model.TenantIdDTOV1;
@@ -25,6 +27,7 @@ import io.smallrye.config.SmallRyeConfig;
 @QuarkusTest
 @TestHTTPEndpoint(TenantControllerV1.class)
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-tn:read" })
 class TenantControllerV1ConfigTest extends AbstractTest {
 
     @Test
@@ -34,6 +37,7 @@ class TenantControllerV1ConfigTest extends AbstractTest {
         var token = keycloakClient.getAccessToken("user_with_orgId_1234");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)

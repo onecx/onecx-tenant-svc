@@ -11,6 +11,8 @@ tags:
 paths:
   /exim/v1/tenants/operator:
     post:
+      security:
+        - oauth2: [ ocx-tn:write ]
       tags:
         - tenantExportImport
       description: Operator import tenants
@@ -37,6 +39,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/EximProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-tn:write: Grants write access
   schemas:
     TenantsSnapshot:
       type: object

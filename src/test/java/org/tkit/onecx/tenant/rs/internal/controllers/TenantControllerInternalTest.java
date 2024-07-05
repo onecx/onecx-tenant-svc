@@ -4,9 +4,11 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.tenant.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.tenant.rs.internal.model.*;
@@ -16,6 +18,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
 @TestHTTPEndpoint(TenantControllerInternal.class)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-tn:read", "ocx-tn:write", "ocx-tn:all" })
 class TenantControllerInternalTest extends AbstractTest {
 
     @Test
@@ -27,6 +30,7 @@ class TenantControllerInternalTest extends AbstractTest {
         criteria.setPageSize(5);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(criteria)
@@ -41,6 +45,7 @@ class TenantControllerInternalTest extends AbstractTest {
         criteria.setOrgId(" ");
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(criteria)
@@ -55,6 +60,7 @@ class TenantControllerInternalTest extends AbstractTest {
         criteria.setOrgId("1234");
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(criteria)
@@ -74,6 +80,7 @@ class TenantControllerInternalTest extends AbstractTest {
         updateRequest.setOrgId("5678");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(updateRequest)
@@ -94,6 +101,7 @@ class TenantControllerInternalTest extends AbstractTest {
         request.setOrgId("5678");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(request)
@@ -109,6 +117,7 @@ class TenantControllerInternalTest extends AbstractTest {
         request.setOrgId("1111");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(request)
@@ -121,6 +130,7 @@ class TenantControllerInternalTest extends AbstractTest {
     void getTenantTest() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get("1")
@@ -136,6 +146,7 @@ class TenantControllerInternalTest extends AbstractTest {
     void getTenantWrongIdTest() {
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get("does-not-exists")
@@ -151,6 +162,7 @@ class TenantControllerInternalTest extends AbstractTest {
         request.setTenantId("12");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(request)
@@ -171,6 +183,7 @@ class TenantControllerInternalTest extends AbstractTest {
         request.setTenantId("12");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(request)
@@ -183,6 +196,7 @@ class TenantControllerInternalTest extends AbstractTest {
     void createTenantMap_EmptyBody() {
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .post()
@@ -196,6 +210,7 @@ class TenantControllerInternalTest extends AbstractTest {
         request.setOrgId("1234");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(request)

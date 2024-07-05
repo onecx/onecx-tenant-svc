@@ -4,10 +4,12 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.tenant.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.tenant.v1.model.TenantIdDTOV1;
@@ -18,6 +20,7 @@ import io.quarkus.test.keycloak.client.KeycloakTestClient;
 @QuarkusTest
 @TestHTTPEndpoint(TenantControllerV1.class)
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-tn:read" })
 class TenantControllerV1Test extends AbstractTest {
 
     private static String token;
@@ -36,6 +39,7 @@ class TenantControllerV1Test extends AbstractTest {
     void getTenantMapsByOrgId_shouldReturnTenantId() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
@@ -51,7 +55,9 @@ class TenantControllerV1Test extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnNotFound_whenTenantWithOrgIdDoesNotExist() {
 
-        var dto = given().header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -67,20 +73,25 @@ class TenantControllerV1Test extends AbstractTest {
     void getTenantMapsByOrgId_shouldReturnBadRequest_whenNoTokenIsPassed() {
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
 
-        given().header(APM_HEADER_TOKEN, "")
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_TOKEN, "")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
 
-        given().header(APM_HEADER_TOKEN, "this_is_not_token")
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_TOKEN, "this_is_not_token")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
@@ -91,7 +102,9 @@ class TenantControllerV1Test extends AbstractTest {
     @Test
     void getTenantMapsByOrgId_shouldReturnBadRequest_whenTokenUserHasNoOrgId() {
 
-        var dto = given().header(APM_HEADER_TOKEN, tokenWithoutOrgId)
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_TOKEN, tokenWithoutOrgId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get()
