@@ -50,6 +50,8 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     void beforeEach() {
         var tmp = config.unwrap(SmallRyeConfig.class).getConfigMapping(TenantConfig.class);
         Mockito.when(tenantConfig.defaultTenantEnabled()).thenReturn(false);
+        Mockito.when(tenantConfig.defaultNoClaimTenantEnabled()).thenReturn(false);
+        Mockito.when(tenantConfig.defaultNoClaimTenantId()).thenReturn(tmp.defaultNoClaimTenantId());
         Mockito.when(tenantConfig.tokenOrgClaim()).thenReturn(tmp.tokenOrgClaim());
         Mockito.when(tenantConfig.defaultTenantId()).thenReturn(tmp.defaultTenantId());
     }

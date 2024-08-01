@@ -56,8 +56,8 @@ public class TenantControllerV1 implements TenantV1Api {
 
         // validate organization
         if (organizationId == null) {
-            if (config.defaultTenantEnabled()) {
-                return Response.ok(mapper.create(config.defaultTenantId())).build();
+            if (config.defaultNoClaimTenantEnabled()) {
+                return Response.ok(mapper.create(config.defaultNoClaimTenantId())).build();
             }
             log.error("Could not find organization field '{}' in the ID token", config.tokenOrgClaim());
             return Response.status(BAD_REQUEST)
