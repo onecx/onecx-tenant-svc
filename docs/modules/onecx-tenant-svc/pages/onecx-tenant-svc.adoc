@@ -10,6 +10,40 @@ h|[[onecx-tenant-svc_configuration]]link:#onecx-tenant-svc_configuration[Configu
 h|Type
 h|Default
 
+a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-enabled]]`link:#onecx-tenant-svc_onecx-tenant-default-no-claim-enabled[onecx.tenant.default.no-claim.enabled]`
+
+
+[.description]
+--
+Enable or disable default no claim tenant
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_TENANT_DEFAULT_NO_CLAIM_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_TENANT_DEFAULT_NO_CLAIM_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`true`
+
+
+a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id]]`link:#onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id[onecx.tenant.default.no-claim.tenant-id]`
+
+
+[.description]
+--
+Default no claim tenant ID
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_TENANT_DEFAULT_NO_CLAIM_TENANT_ID+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_TENANT_DEFAULT_NO_CLAIM_TENANT_ID+++`
+endif::add-copy-button-to-env-var[]
+--|string 
+|`default`
+
+
 a| [[onecx-tenant-svc_onecx-tenant-default-enabled]]`link:#onecx-tenant-svc_onecx-tenant-default-enabled[onecx.tenant.default.enabled]`
 
 

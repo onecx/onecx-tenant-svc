@@ -16,6 +16,20 @@ import io.smallrye.config.WithName;
 public interface TenantConfig {
 
     /**
+     * Enable or disable default no claim tenant
+     */
+    @WithName("default.no-claim.enabled")
+    @WithDefault("true")
+    boolean defaultNoClaimTenantEnabled();
+
+    /**
+     * Default no claim tenant ID
+     */
+    @WithName("default.no-claim.tenant-id")
+    @WithDefault("default")
+    String defaultNoClaimTenantId();
+
+    /**
      * Enable or disable default tenant
      */
     @WithName("default.enabled")
