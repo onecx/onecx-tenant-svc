@@ -1,4 +1,4 @@
-package org.tkit.onecx.tenant.rs.external;
+package org.tkit.onecx.tenant.domain.services;
 
 import io.quarkus.runtime.annotations.ConfigDocFilename;
 import io.quarkus.runtime.annotations.ConfigPhase;
@@ -50,4 +50,30 @@ public interface TenantConfig {
     @WithDefault("orgId")
     String tokenOrgClaim();
 
+    /**
+     * Tenant resolver configuration
+     */
+    @WithName("resolver")
+    TenantResolverConfig resolver();
+
+    /**
+     * Tenant resolver configuration
+     */
+    interface TenantResolverConfig {
+
+        /**
+         * Enable or disable default tenant
+         */
+        @WithName("default.enabled")
+        @WithDefault("true")
+        boolean defaultTenantEnabled();
+
+        /**
+         * Default tenant ID
+         */
+        @WithName("default.tenant-id")
+        @WithDefault("default")
+        String defaultTenantId();
+
+    }
 }
