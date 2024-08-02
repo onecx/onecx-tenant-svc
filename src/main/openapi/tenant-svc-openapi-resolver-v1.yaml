@@ -29,12 +29,6 @@ paths:
               "application/json":
                 schema:
                   $ref: "#/components/schemas/TenantId"
-          "400":
-            description: Bad request
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/ProblemDetailResponse'
           "404":
             description: Not found
 components:
@@ -55,32 +49,3 @@ components:
         tenantId:
           type: string
           description: Id of the tenant
-    ProblemDetailResponse:
-      type: object
-      properties:
-        errorCode:
-          type: string
-        detail:
-          type: string
-        params:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProblemDetailParam'
-        invalidParams:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProblemDetailInvalidParam'
-    ProblemDetailParam:
-      type: object
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-    ProblemDetailInvalidParam:
-      type: object
-      properties:
-        name:
-          type: string
-        message:
-          type: string
