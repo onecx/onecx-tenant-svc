@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.tenant.domain.daos.TenantDAO;
-import org.tkit.onecx.tenant.rs.external.TenantConfig;
+import org.tkit.onecx.tenant.domain.services.TenantConfig;
 import org.tkit.onecx.tenant.rs.external.v1.mappers.TenantMapperV1;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.rs.context.token.TokenException;

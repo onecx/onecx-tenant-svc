@@ -1,0 +1,51 @@
+openapi: "3.0.2"
+info:
+  title: onecx-tenant-svc
+  version: "1.0"
+servers:
+  - url: https://localhost:8080
+tags:
+  - name: TenantResolver
+    description: Tenant resolver service
+paths:
+  /v1/tenant/{orgId}:
+      get:
+        security:
+          - oauth2: [ ocx-tn-resolver:read ]
+        tags:
+          - TenantResolver
+        summary: Get tenant
+        operationId: getTenantByOrgId
+        parameters:
+          - name: orgId
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          "200":
+            description: OK
+            content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/TenantId"
+          "404":
+            description: Not found
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-tn-resolver:read: Grants read access
+  schemas:
+    TenantId:
+      required:
+        - tenantId
+      type: object
+      properties:
+        tenantId:
+          type: string
+          description: Id of the tenant

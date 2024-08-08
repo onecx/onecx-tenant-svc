@@ -12,7 +12,7 @@ import org.eclipse.microprofile.config.Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.tkit.onecx.tenant.rs.external.TenantConfig;
+import org.tkit.onecx.tenant.domain.services.TenantConfig;
 import org.tkit.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;

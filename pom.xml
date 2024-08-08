@@ -237,6 +237,19 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>resolver-v1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/tenant-svc-openapi-resolver-v1.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.tenant.resolver.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.tenant.resolver.v1.model</modelPackage>
+                            <modelNameSuffix>DTOV1</modelNameSuffix>
+                            <apiNameSuffix>V1Api</apiNameSuffix>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>di-v1</id>
                         <goals>
                             <goal>generate</goal>

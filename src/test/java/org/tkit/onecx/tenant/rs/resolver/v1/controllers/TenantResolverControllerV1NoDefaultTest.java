@@ -1,4 +1,4 @@
-package org.tkit.onecx.tenant.rs.external.v1.controllers;
+package org.tkit.onecx.tenant.rs.resolver.v1.controllers;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -18,7 +18,6 @@ import org.tkit.onecx.tenant.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.tenant.v1.model.ProblemDetailResponseDTOV1;
 import gen.org.tkit.onecx.tenant.v1.model.TenantIdDTOV1;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -27,16 +26,12 @@ import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import io.smallrye.config.SmallRyeConfig;
 
 @QuarkusTest
-@TestHTTPEndpoint(TenantControllerV1.class)
+@TestHTTPEndpoint(TenantResolverControllerV1.class)
 @WithDBData(value = { "testdata/tenant-testdata.xml" }, deleteBeforeInsert = true, rinseAndRepeat = true)
-@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-tn:read" })
-class TenantControllerV1NoDefaultTest extends AbstractTest {
+@GenerateKeycloakClient(clientName = "resolver-client", scopes = { "ocx-tn-resolver:read" })
+class TenantResolverControllerV1NoDefaultTest extends AbstractTest {
 
     private static String token;
-
-    private static String tokenWithNotExistingOrgId;
-
-    private static String tokenWithoutOrgId;
 
     private static final KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
@@ -49,8 +44,22 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     @BeforeEach
     void beforeEach() {
         var tmp = config.unwrap(SmallRyeConfig.class).getConfigMapping(TenantConfig.class);
+
+        TenantConfig.TenantResolverConfig trc = new TenantConfig.TenantResolverConfig() {
+            @Override
+            public boolean defaultTenantEnabled() {
+                return false;
+            }
+
+            @Override
+            public String defaultTenantId() {
+                return "none";
+            }
+        };
+
         Mockito.when(tenantConfig.defaultTenantEnabled()).thenReturn(false);
-        Mockito.when(tenantConfig.defaultNoClaimTenantEnabled()).thenReturn(false);
+        Mockito.when(tenantConfig.resolver()).thenReturn(trc);
+        Mockito.when(tenantConfig.defaultNoClaimTenantEnabled()).thenReturn(tmp.defaultNoClaimTenantEnabled());
         Mockito.when(tenantConfig.defaultNoClaimTenantId()).thenReturn(tmp.defaultNoClaimTenantId());
         Mockito.when(tenantConfig.tokenOrgClaim()).thenReturn(tmp.tokenOrgClaim());
         Mockito.when(tenantConfig.defaultTenantId()).thenReturn(tmp.defaultTenantId());
@@ -59,48 +68,31 @@ class TenantControllerV1NoDefaultTest extends AbstractTest {
     @BeforeAll
     static void setUp() {
         token = keycloakClient.getAccessToken("user_with_orgId_1234");
-        tokenWithNotExistingOrgId = keycloakClient.getAccessToken("user_with_orgId_2222");
-        tokenWithoutOrgId = keycloakClient.getAccessToken("user_with_no_orgId");
     }
 
     @Test
-    void getTenantMapsByOrgId_shouldReturnNotFound_whenTenantWithOrgIdDoesNotExist() {
+    void getTenantByOrgIdDoesNotExistsTest() {
 
         given()
-                .auth().oauth2(getKeycloakClientToken("testClient")).header(APM_HEADER_TOKEN, tokenWithNotExistingOrgId)
+                .auth().oauth2(getKeycloakClientToken("resolver-client"))
+                .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
+                .pathParam("orgId", 1234567)
                 .get()
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }
 
     @Test
-    void skipTokenVerified() {
+    void getTenantByOrgIdExistsTest() {
 
         var dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .header(APM_HEADER_TOKEN, tokenWithoutOrgId)
-                .contentType(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTOV1.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getErrorCode()).isNotNull()
-                .isEqualTo(TenantControllerV1.ErrorKeys.ERROR_NO_ORGANIZATION_ID_IN_TOKEN.name());
-    }
-
-    @Test
-    void getTenantMapsByOrgId_shouldReturnTenantId() {
-
-        var dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .auth().oauth2(getKeycloakClientToken("resolver-client"))
                 .header(APM_HEADER_TOKEN, token)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
+                .pathParam("orgId", 1234)
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())

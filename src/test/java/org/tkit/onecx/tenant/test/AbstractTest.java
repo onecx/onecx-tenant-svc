@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.tkit.onecx.tenant.rs.external.TenantConfig;
+import org.tkit.onecx.tenant.domain.services.TenantConfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
