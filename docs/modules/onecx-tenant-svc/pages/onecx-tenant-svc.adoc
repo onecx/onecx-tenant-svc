@@ -1,21 +1,19 @@
-
 :summaryTableId: onecx-tenant-svc
 [.configuration-legend]
 icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
 [.configuration-reference.searchable, cols="80,.^10,.^10"]
 |===
 
-h|[[onecx-tenant-svc_configuration]]link:#onecx-tenant-svc_configuration[Configuration property]
-
+h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-enabled]]`link:#onecx-tenant-svc_onecx-tenant-default-no-claim-enabled[onecx.tenant.default.no-claim.enabled]`
-
+a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-no-claim-enabled[`onecx.tenant.default.no-claim.enabled`]##
 
 [.description]
 --
 Enable or disable default no claim tenant
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_TENANT_DEFAULT_NO_CLAIM_ENABLED+++[]
@@ -23,16 +21,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_TENANT_DEFAULT_NO_CLAIM_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--
+|boolean
 |`true`
 
-
-a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id]]`link:#onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id[onecx.tenant.default.no-claim.tenant-id]`
-
+a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id[`onecx.tenant.default.no-claim.tenant-id`]##
 
 [.description]
 --
 Default no claim tenant ID
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_TENANT_DEFAULT_NO_CLAIM_TENANT_ID+++[]
@@ -40,16 +38,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_TENANT_DEFAULT_NO_CLAIM_TENANT_ID+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`default`
 
-
-a| [[onecx-tenant-svc_onecx-tenant-default-enabled]]`link:#onecx-tenant-svc_onecx-tenant-default-enabled[onecx.tenant.default.enabled]`
-
+a| [[onecx-tenant-svc_onecx-tenant-default-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-enabled[`onecx.tenant.default.enabled`]##
 
 [.description]
 --
 Enable or disable default tenant
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_TENANT_DEFAULT_ENABLED+++[]
@@ -57,16 +55,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_TENANT_DEFAULT_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--
+|boolean
 |`true`
 
-
-a| [[onecx-tenant-svc_onecx-tenant-default-tenant-id]]`link:#onecx-tenant-svc_onecx-tenant-default-tenant-id[onecx.tenant.default.tenant-id]`
-
+a| [[onecx-tenant-svc_onecx-tenant-default-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-tenant-id[`onecx.tenant.default.tenant-id`]##
 
 [.description]
 --
 Default tenant ID
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_TENANT_DEFAULT_TENANT_ID+++[]
@@ -74,16 +72,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_TENANT_DEFAULT_TENANT_ID+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`default`
 
-
-a| [[onecx-tenant-svc_onecx-tenant-token-claim-org-id]]`link:#onecx-tenant-svc_onecx-tenant-token-claim-org-id[onecx.tenant.token.claim.org-id]`
-
+a| [[onecx-tenant-svc_onecx-tenant-token-claim-org-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-token-claim-org-id[`onecx.tenant.token.claim.org-id`]##
 
 [.description]
 --
 Token claim ID of the organization ID
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_TENANT_TOKEN_CLAIM_ORG_ID+++[]
@@ -91,16 +89,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_TENANT_TOKEN_CLAIM_ORG_ID+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`orgId`
 
-
-a| [[onecx-tenant-svc_onecx-tenant-resolver-default-enabled]]`link:#onecx-tenant-svc_onecx-tenant-resolver-default-enabled[onecx.tenant.resolver.default.enabled]`
-
+a| [[onecx-tenant-svc_onecx-tenant-resolver-default-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-resolver-default-enabled[`onecx.tenant.resolver.default.enabled`]##
 
 [.description]
 --
 Enable or disable default tenant
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_TENANT_RESOLVER_DEFAULT_ENABLED+++[]
@@ -108,16 +106,16 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_TENANT_RESOLVER_DEFAULT_ENABLED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--
+|boolean
 |`true`
 
-
-a| [[onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id]]`link:#onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id[onecx.tenant.resolver.default.tenant-id]`
-
+a| [[onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id[`onecx.tenant.resolver.default.tenant-id`]##
 
 [.description]
 --
 Default tenant ID
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_TENANT_RESOLVER_DEFAULT_TENANT_ID+++[]
@@ -125,7 +123,11 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_TENANT_RESOLVER_DEFAULT_TENANT_ID+++`
 endif::add-copy-button-to-env-var[]
---|string 
+--
+|string
 |`default`
 
 |===
+
+
+:!summaryTableId:
