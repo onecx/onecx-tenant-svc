@@ -168,7 +168,7 @@
                             </url>
                             <outputDirectory>target/tmp/openapi</outputDirectory>
                             <outputFileName>onecx-tenant-resolver-v1.yaml</outputFileName>
-                            <skipCache>false</skipCache>
+                            <skipCache>true</skipCache>
                         </configuration>
                     </execution>
                     <execution>
