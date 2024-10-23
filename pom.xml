@@ -153,25 +153,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.tkit.maven</groupId>
-                <artifactId>tkit-docs-quarkus-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>docs</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>docs</goal>
-                        </goals>
-                        <configuration>
-                            <skipDocs>${skipDocs}</skipDocs>
-                            <openApiFiles>
-                                <openApiFile>tenant-svc-openapi-v1.yaml</openApiFile>
-                            </openApiFiles>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
                 <artifactId>download-maven-plugin</artifactId>
                 <executions>
@@ -190,9 +171,24 @@
                             <skipCache>false</skipCache>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>onecx-tenant-v1</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>
+                                https://raw.githubusercontent.com/onecx/onecx-tenant/main/openapi/onecx-tenant-v1.yaml
+                            </url>
+                            <outputDirectory>target/tmp/openapi</outputDirectory>
+                            <outputFileName>onecx-tenant-v1.yaml</outputFileName>
+                            <skipCache>true</skipCache>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
-             <plugin>
+            <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <configuration>
@@ -251,10 +247,11 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/tenant-svc-openapi-v1.yaml</inputSpec>
+                            <inputSpec>target/tmp/openapi/onecx-tenant-v1.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.tenant.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.tenant.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
+                            <apiNameSuffix>V1Api</apiNameSuffix>
                         </configuration>
                     </execution>
                     <execution>
