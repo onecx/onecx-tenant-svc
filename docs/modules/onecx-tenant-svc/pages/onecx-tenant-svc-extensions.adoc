@@ -138,7 +138,7 @@ h| Version
 
 | https://onecx.github.io/docs/onecx-quarkus/current/onecx-quarkus/onecx-core.html[Link]
 | 
-| 0.33.0
+| 0.34.0
 
 | quarkus-container-image-docker
 
@@ -151,7 +151,7 @@ h| Version
 
 | 
 | 
-| 0.33.0
+| 0.34.0
 
 
 |===

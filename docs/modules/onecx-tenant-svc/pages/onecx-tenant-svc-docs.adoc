@@ -9,9 +9,11 @@ include::onecx-tenant-svc-attributes.adoc[opts=optional]
 [source,properties,subs=attributes+]
 ----
 quarkus.datasource.db-kind=postgresql
+quarkus.datasource.metrics.enabled=true
 quarkus.banner.enabled=false
 quarkus.hibernate-orm.database.generation=validate
 quarkus.hibernate-orm.jdbc.timezone=UTC
+quarkus.hibernate-orm.metrics.enabled=true
 quarkus.liquibase.migrate-at-start=true
 quarkus.liquibase.validate-on-migrate=true
 quarkus.http.auth.permission.health.paths=/q/*
