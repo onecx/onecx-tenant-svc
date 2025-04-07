@@ -59,5 +59,10 @@ app:
     repository: "onecx/onecx-tenant-svc"
   db:
     enabled: true
+  operator:
+    microservice:
+      spec:
+        description: OneCX Tenant Backend Service
+        name: OneCX Tenant SVC
 ----
 
