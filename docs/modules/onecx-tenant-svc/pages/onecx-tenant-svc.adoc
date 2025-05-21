@@ -1,4 +1,3 @@
-:summaryTableId: onecx-tenant-svc
 [.configuration-legend]
 icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
 [.configuration-reference.searchable, cols="80,.^10,.^10"]
@@ -9,6 +8,10 @@ h|Type
 h|Default
 
 a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-no-claim-enabled[`onecx.tenant.default.no-claim.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.tenant.default.no-claim.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -26,6 +29,10 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id[`onecx.tenant.default.no-claim.tenant-id`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.tenant.default.no-claim.tenant-id+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -43,6 +50,10 @@ endif::add-copy-button-to-env-var[]
 |`default`
 
 a| [[onecx-tenant-svc_onecx-tenant-default-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-enabled[`onecx.tenant.default.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.tenant.default.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -60,6 +71,10 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 a| [[onecx-tenant-svc_onecx-tenant-default-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-tenant-id[`onecx.tenant.default.tenant-id`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.tenant.default.tenant-id+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -77,6 +92,10 @@ endif::add-copy-button-to-env-var[]
 |`default`
 
 a| [[onecx-tenant-svc_onecx-tenant-token-claim-org-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-token-claim-org-id[`onecx.tenant.token.claim.org-id`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.tenant.token.claim.org-id+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -94,6 +113,10 @@ endif::add-copy-button-to-env-var[]
 |`orgId`
 
 a| [[onecx-tenant-svc_onecx-tenant-resolver-default-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-resolver-default-enabled[`onecx.tenant.resolver.default.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.tenant.resolver.default.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -111,6 +134,10 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 a| [[onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id[`onecx.tenant.resolver.default.tenant-id`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.tenant.resolver.default.tenant-id+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -129,5 +156,3 @@ endif::add-copy-button-to-env-var[]
 
 |===
 
-
-:!summaryTableId:
