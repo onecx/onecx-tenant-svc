@@ -29,7 +29,7 @@ tkit.dataimport.configurations.tenant.file=tenant-example-file.json
 tkit.dataimport.configurations.tenant.metadata.operation=CLEAN_INSERT
 tkit.dataimport.configurations.tenant.enabled=false
 tkit.dataimport.configurations.tenant.stop-at-error=true
-%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
+%prod.quarkus.oidc-client.client-id=${ONECX_OIDC_CLIENT_CLIENT_ID:${quarkus.application.name}}
 %prod.quarkus.datasource.jdbc.url=${DB_URL:jdbc:postgresql://postgresdb:5432/onecx-tenant?sslmode=disable}
 %prod.quarkus.datasource.username=${DB_USER:onecx-tenant}
 %prod.quarkus.datasource.password=${DB_PWD:onecx-tenant}
@@ -56,6 +56,8 @@ Default values
 ----
 app:
   name: svc
+  template:
+    oidc_client_id: "ONECX_OIDC_CLIENT_CLIENT_ID"
   image:
     repository: "onecx/onecx-tenant-svc"
   db:
