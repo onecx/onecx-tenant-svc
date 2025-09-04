@@ -220,7 +220,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/tenant-svc-openapi-internal.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-tenant-internal.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.tenant.rs.internal</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.tenant.rs.internal.model</modelPackage>
                         </configuration>
@@ -231,7 +231,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-tenant-exim-v1-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-tenant-exim-v1.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.tenant.exim.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.tenant.exim.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
@@ -270,7 +270,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/tenant-svc-openapi-di-v1.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-tenant-di-v1.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.tenant.di.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.tenant.di.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>

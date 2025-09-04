@@ -1,7 +1,8 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-tenant data import
+  title: onecx-tenant data import service V1
+  description: This API provides endpoints for data import on application start
   version: 1.0.0
 servers:
   - url: "http://localhost"
@@ -11,6 +12,7 @@ paths:
       security:
         - oauth2: [ ocx-tn:write ]
       operationId: importTenant
+      description: Import tenants
       requestBody:
         content:
           application/json:
