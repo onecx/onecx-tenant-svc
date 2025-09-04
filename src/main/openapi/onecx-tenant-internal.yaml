@@ -1,12 +1,13 @@
 openapi: "3.0.2"
 info:
-  title: onecx-tenant-svc
+  title: onecx-tenant internal service
+  description: This API provides endpoints to manage Tenants
   version: "1.0"
 servers:
   - url: https://localhost:8080
 tags:
   - name: tenantInternal
-    description: internal tenant service
+    description: Managing Tenants
 paths:
   /internal/tenants/search:
       post:
@@ -14,7 +15,7 @@ paths:
           - oauth2: [ ocx-tn:all, ocx-tn:read ]
         tags:
           - tenantInternal
-        summary: Search tenants by criteria
+        description: Search tenants by search criteria
         operationId: searchTenants
         requestBody:
           required: true
@@ -24,7 +25,7 @@ paths:
                 $ref: '#/components/schemas/TenantSearchCriteria'
         responses:
           "200":
-            description: OK
+            description: Tenant search results retrieved successfully
             content:
               "application/json":
                 schema:
@@ -41,7 +42,7 @@ paths:
           - oauth2: [ ocx-tn:all, ocx-tn:write ]
         tags:
           - tenantInternal
-        summary: Create new tenant
+        summary: Create a new tenant
         operationId: createTenant
         requestBody:
           required: true
@@ -51,7 +52,7 @@ paths:
                   $ref: '#/components/schemas/CreateTenantRequest'
         responses:
           "201":
-            description: Created
+            description: Tenant created successfully
             headers:
               Location:
                 required: true
@@ -65,14 +66,14 @@ paths:
                 schema:
                   $ref: '#/components/schemas/ProblemDetailResponse'
           "404":
-            description: Not found
+            description: Tenant not found
   /internal/tenants/{id}:
       get:
         security:
           - oauth2: [ ocx-tn:all, ocx-tn:read ]
         tags:
           - tenantInternal
-        summary: Get Tenant map by GUID
+        summary: Get Tenant map by its id
         operationId: getTenant
         parameters:
           - name: id
@@ -82,19 +83,19 @@ paths:
               type: string
         responses:
           "200":
-            description: OK
+            description: Tenants retrieved successfully
             content:
               "application/json":
                 schema:
                   $ref: "#/components/schemas/Tenant"
           "404":
-            description: Not found
+            description: Tenant not found
       put:
         security:
           - oauth2: [ ocx-tn:all, ocx-tn:write ]
         tags:
           - tenantInternal
-        summary: Update tenant
+        summary: Update a tenant by its id
         operationId: updateTenant
         parameters:
         - name: id
@@ -109,7 +110,7 @@ paths:
                   $ref: '#/components/schemas/UpdateTenantRequest'
         responses:
           "200":
-            description: OK
+            description: Tenant updated successfully
             content:
               "application/json":
                 schema:
@@ -121,7 +122,7 @@ paths:
                 schema:
                   $ref: '#/components/schemas/ProblemDetailResponse'
           "404":
-            description: Not found
+            description: Tenant not found
 components:
   securitySchemes:
     oauth2:
