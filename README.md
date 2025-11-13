@@ -1,4 +1,4 @@
-# OneCX-tenant-svc
+# onecx-tenant-svc
 
 OneCX Tenant Service
 
