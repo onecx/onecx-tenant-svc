@@ -45,13 +45,13 @@ class TenantImportServiceTest extends AbstractTest {
         };
         service.importData(config);
 
-        List<Tenant> data = dao.findAll().toList();
+        List<Tenant> data = dao.findAllAsList();
         Assertions.assertNotNull(data);
         Assertions.assertEquals(2, data.size());
 
         config.getMetadata().put("operation", "NONE");
 
-        data = dao.findAll().toList();
+        data = dao.findAllAsList();
         Assertions.assertNotNull(data);
         Assertions.assertEquals(2, data.size());
     }
@@ -88,7 +88,7 @@ class TenantImportServiceTest extends AbstractTest {
             }
         });
 
-        List<Tenant> params = dao.findAll().toList();
+        List<Tenant> params = dao.findAllAsList();
         Assertions.assertNotNull(params);
         Assertions.assertEquals(3, params.size());
     }
