@@ -7,4 +7,5 @@
         <include relativeToChangelogFile="true" file="v1/2023-11-17-createTables.xml"/>
         <include relativeToChangelogFile="true" file="v1/2023-11-17-data-import.xml"/>
         <include relativeToChangelogFile="true" file="v1/2024-05-28-tenant-operator.xml"/>
+        <include relativeToChangelogFile="true" file="v1/2025-12-04-create-image-table.xml"/>
 </databaseChangeLog>

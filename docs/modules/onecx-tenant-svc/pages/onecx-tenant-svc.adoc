@@ -26,7 +26,7 @@ Environment variable: `+++ONECX_TENANT_DEFAULT_NO_CLAIM_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a| [[onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-no-claim-tenant-id[`onecx.tenant.default.no-claim.tenant-id`]##
 ifdef::add-copy-button-to-config-props[]
@@ -47,7 +47,7 @@ Environment variable: `+++ONECX_TENANT_DEFAULT_NO_CLAIM_TENANT_ID+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`default`
+|`+++default+++`
 
 a| [[onecx-tenant-svc_onecx-tenant-default-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-enabled[`onecx.tenant.default.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -68,7 +68,7 @@ Environment variable: `+++ONECX_TENANT_DEFAULT_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a| [[onecx-tenant-svc_onecx-tenant-default-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-default-tenant-id[`onecx.tenant.default.tenant-id`]##
 ifdef::add-copy-button-to-config-props[]
@@ -89,7 +89,7 @@ Environment variable: `+++ONECX_TENANT_DEFAULT_TENANT_ID+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`default`
+|`+++default+++`
 
 a| [[onecx-tenant-svc_onecx-tenant-token-claim-org-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-token-claim-org-id[`onecx.tenant.token.claim.org-id`]##
 ifdef::add-copy-button-to-config-props[]
@@ -110,7 +110,7 @@ Environment variable: `+++ONECX_TENANT_TOKEN_CLAIM_ORG_ID+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`orgId`
+|`+++orgId+++`
 
 a| [[onecx-tenant-svc_onecx-tenant-resolver-default-enabled]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-resolver-default-enabled[`onecx.tenant.resolver.default.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -131,7 +131,7 @@ Environment variable: `+++ONECX_TENANT_RESOLVER_DEFAULT_ENABLED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`true`
+|`+++true+++`
 
 a| [[onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id]] [.property-path]##link:#onecx-tenant-svc_onecx-tenant-resolver-default-tenant-id[`onecx.tenant.resolver.default.tenant-id`]##
 ifdef::add-copy-button-to-config-props[]
@@ -152,7 +152,7 @@ Environment variable: `+++ONECX_TENANT_RESOLVER_DEFAULT_TENANT_ID+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`default`
+|`+++default+++`
 
 |===
 
