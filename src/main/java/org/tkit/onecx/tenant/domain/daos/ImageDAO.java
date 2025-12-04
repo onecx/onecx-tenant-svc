@@ -51,8 +51,6 @@ public class ImageDAO extends AbstractDAO<Image> {
 
     public enum ErrorKeys {
 
-        FAILED_TO_DELETE_BY_REF_ID_QUERY,
-
         FIND_ENTITY_BY_REF_ID_REF_TYPE_FAILED,
 
         FAILED_TO_DELETE_BY_REF_ID_REF_TYPE_QUERY
