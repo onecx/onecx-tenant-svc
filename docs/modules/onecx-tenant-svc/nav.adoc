@@ -1,4 +1,0 @@
-* xref:onecx-tenant-svc:index.adoc[Tenant Backend Service]
-** External API(s)
-*** xref:onecx-tenant-svc:openapi/onecx-tenant-v1.adoc[Tenant Management V1]
-*** xref:onecx-tenant-svc:openapi/onecx-tenant-resolver-v1.adoc[Tenant Resolver V1]
