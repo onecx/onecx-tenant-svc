@@ -67,8 +67,3 @@ app:
         name: OneCX Tenant SVC
 ----
 
-spec:
-        description: OneCX Tenant Backend Service
-        name: OneCX Tenant SVC
-----
-
