@@ -1,10 +1,9 @@
 include::onecx-tenant-svc-attributes.adoc[opts=optional]
 
-== onecx-tenant-svc
+= OneCX Tenant Backend Service
 
-include::docs.adoc[opts=optional]
 
-=== Configuration
+== Configuration
 include::onecx-tenant-svc.adoc[opts=optional]
 
 include::onecx-tenant-svc-docs.adoc[opts=optional]
