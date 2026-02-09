@@ -39,9 +39,7 @@ public class ImageDAO extends AbstractDAO<Image> {
             var cq = deleteQuery();
             var root = cq.from(Image.class);
             var cb = this.getEntityManager().getCriteriaBuilder();
-
-            cq.where(cb.equal(root.get(Image_.REF_ID), refId));
-            cq.where(cb.equal(root.get(Image_.REF_TYPE), refType.toString()));
+            cq.where(cb.and(cb.equal(root.get(Image_.REF_ID), refId)), cb.equal(root.get(Image_.REF_TYPE), refType.toString()));
             getEntityManager().createQuery(cq).executeUpdate();
             getEntityManager().flush();
         } catch (Exception e) {
