@@ -17,6 +17,7 @@ import org.tkit.onecx.tenant.rs.internal.mappers.TenantMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.image.rs.internal.ImagesInternalApi;
+import gen.org.tkit.onecx.image.rs.internal.model.MimeTypeDTO;
 import gen.org.tkit.onecx.image.rs.internal.model.RefTypeDTO;
 import gen.org.tkit.onecx.tenant.rs.internal.model.ProblemDetailResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -43,13 +44,6 @@ public class ImagesInternalRestController implements ImagesInternalApi {
     ImageMapper imageMapper;
 
     @Override
-    public Response deleteImage(String refId, RefTypeDTO refType) {
-        imageDAO.deleteQueryByRefIdAndRefType(refId, refType);
-
-        return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
-    @Override
     @Transactional
     public Response getImage(String refId, RefTypeDTO refType) {
         Image image = imageDAO.findByRefIdAndRefType(refId, refType.toString());
@@ -61,23 +55,26 @@ public class ImagesInternalRestController implements ImagesInternalApi {
     }
 
     @Override
-    public Response uploadImage(Integer contentLength, String refId, RefTypeDTO refType, byte[] body) {
+    public Response uploadImage(Integer contentLength, String refId, RefTypeDTO refType, MimeTypeDTO mimeType, byte[] body) {
         Image image = imageDAO.findByRefIdAndRefType(refId, refType.toString());
-
-        var contentType = httpHeaders.getMediaType();
-        contentType = new MediaType(contentType.getType(), contentType.getSubtype());
-
         if (image == null) {
-            image = imageMapper.create(refId, refType.toString(), contentType.toString(), contentLength, body);
+            image = imageMapper.create(refId, refType.toString(), mimeType.toString(), contentLength, body);
             image = imageDAO.create(image);
         } else {
-            imageMapper.update(image, contentLength, contentType.toString(), body);
+            imageMapper.update(image, contentLength, mimeType.toString(), body);
             image = imageDAO.update(image);
         }
         var imageInfoDTO = imageMapper.map(image);
         return Response.created(uriInfo.getAbsolutePathBuilder().path(imageInfoDTO.getId()).build())
                 .entity(imageInfoDTO)
                 .build();
+    }
+
+    @Override
+    public Response deleteImage(String refId, RefTypeDTO refType) {
+        imageDAO.deleteQueryByRefIdAndRefType(refId, refType);
+
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @ServerExceptionMapper
